@@ -26,7 +26,7 @@ const ALCHEMY_ARBITRUM  = process.env.ALCHEMY_ARBITRUM_URL;
 const ALCHEMY_SEPOLIA   = process.env.ALCHEMY_SEPOLIA_URL;
 const TENDERLY_RPC      = process.env.TENDERLY_RPC_URL;
 const ETHERSCAN_KEY     = process.env.ETHERSCAN_API_KEY;
-const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src_compilable';
+
 
 if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
   throw new Error('ALCHEMY_ARBITRUM_URL is required in .env for mainnet deployment');

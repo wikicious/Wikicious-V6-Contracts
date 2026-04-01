@@ -78,7 +78,7 @@ contract WikiLiqProtection is Ownable2Step, ReentrancyGuard {
     IIdleYieldRouter public idleYieldRouter;
 
     function setIdleYieldRouter(address router) external onlyOwner {
-        idleYieldRouter = router;
+        idleYieldRouter = IIdleYieldRouter(router);
     }
 
     /// @notice Keeper calls this to deploy idle USDC to yield strategies
@@ -210,7 +210,7 @@ contract WikiLiqProtection is Ownable2Step, ReentrancyGuard {
         if (keeperFee > 0) USDC.safeTransfer(msg.sender, keeperFee);
 
         // Add margin to position (calls WikiPerp.addMargin)
-        USDC.safeApprove(perpContract, netAdd);
+        USDC.forceApprove(perpContract, netAdd);
         (bool ok,) = perpContract.call(abi.encodeWithSignature("addMarginForProtection(address,uint256)", trader, netAdd));
 
         emit MarginAutoAdded(trader, netAdd, currentHealthBps, 0);

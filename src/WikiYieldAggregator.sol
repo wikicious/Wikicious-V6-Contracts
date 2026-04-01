@@ -101,7 +101,7 @@ contract WikiYieldAggregator is Ownable2Step, ReentrancyGuard {
     function _depositTo(address user, uint256 stratId, uint256 amount) internal {
         Strategy storage s = strategies[stratId];
         USDC.safeTransferFrom(user, address(this), amount);
-        USDC.safeApprove(s.vault, amount);
+        USDC.forceApprove(s.vault, amount);
 
         // Try each signature variant (different vaults have different interfaces)
         (bool ok,) = s.vault.call(abi.encodeWithSignature("deposit(uint256,uint256)", amount, 0));
