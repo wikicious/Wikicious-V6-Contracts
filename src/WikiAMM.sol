@@ -71,7 +71,7 @@ contract WikiAMM is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
 
     constructor(address usdc, address _vault, address _oracle, address owner)
         ERC20("Wikicious LP", "WLP")
-        Ownable2Step()
+        Ownable(owner)
     {
         require(usdc != address(0), "Wiki: zero usdc");
         require(_vault != address(0), "Wiki: zero _vault");

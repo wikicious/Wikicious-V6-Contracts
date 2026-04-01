@@ -218,7 +218,7 @@ contract WikiOpsVault is Ownable2Step, ReentrancyGuard, Pausable {
             toLending = needed > remaining ? remaining : needed;
             remaining -= toLending;
             if (toLending > 0) {
-                USDC.safeApprove(address(lendingPool), toLending);
+                USDC.forceApprove(address(lendingPool), toLending);
                 try lendingPool.supply(lendingMarketId, toLending) {} catch { remaining += toLending; toLending = 0; } // [A6]
             }
         }
@@ -229,7 +229,7 @@ contract WikiOpsVault is Ownable2Step, ReentrancyGuard, Pausable {
             toBackstop = needed > remaining ? remaining : needed;
             remaining -= toBackstop;
             if (toBackstop > 0) {
-                USDC.safeApprove(address(backstopVault), toBackstop);
+                USDC.forceApprove(address(backstopVault), toBackstop);
                 try backstopVault.deposit(toBackstop, 0) {} catch { remaining += toBackstop; toBackstop = 0; } // [A6]
             }
         }
@@ -240,7 +240,7 @@ contract WikiOpsVault is Ownable2Step, ReentrancyGuard, Pausable {
             toFunding = needed > remaining ? remaining : needed;
             remaining -= toFunding;
             if (toFunding > 0) {
-                USDC.safeApprove(address(fundingArbVault), toFunding);
+                USDC.forceApprove(address(fundingArbVault), toFunding);
                 try fundingArbVault.deposit(toFunding) {} catch { remaining += toFunding; toFunding = 0; } // [A6]
             }
         }

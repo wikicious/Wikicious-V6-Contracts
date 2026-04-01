@@ -6,6 +6,13 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+
+
+interface IWikiPerp {
+    function openPosition(bytes32 marketId, bool isLong, uint256 margin, uint256 leverage, address trader) external returns (uint256 positionId);
+    function closePosition(uint256 positionId, address trader) external returns (int256 pnl);
+}
+
 /**
  * @title WikiCopyTrading
  * @notice Social trading vaults — top traders lead, followers mirror every trade.
@@ -159,7 +166,7 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
             accruedPerfFee:   0
         });
 
-        emit VaultCreated(vaultId, msg.sender, name);
+        emit SocialVaultCreated(vaultId, msg.sender, name);
     }
 
     // ── Follower: Deposit ─────────────────────────────────────────────────
@@ -240,7 +247,7 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
         uint256 margin = v.totalAUM * allocationBps / BPS;
         require(margin > 0 && USDC.balanceOf(address(this)) >= margin, "CT: insufficient funds");
 
-        USDC.safeApprove(address(perp), margin);
+        USDC.forceApprove(address(perp), margin);
         uint256 posId = perp.openPosition(marketId, isLong, margin, leverage, address(this));
         vaultPositions[vaultId].push(posId);
 
@@ -341,10 +348,10 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
     mapping(uint256 => SocialVault) public socialVaults;
     mapping(address => uint256)     public leadTrader;     // trader → vaultId they lead
     mapping(address => uint256)     public followingVault; // follower → vaultId
-    event VaultCreated(uint256 vaultId, address leadTrader, string name);
-    event FollowerJoined(uint256 vaultId, address follower, uint256 amount);
-    event FollowerExited(uint256 vaultId, address follower, uint256 amount);
-    event TradeMirrored(uint256 vaultId, address leader, bool isLong, uint256 notional);
+    event SocialVaultCreated(uint256 vaultId, address leadTrader, string name);
+    event SocialFollowerJoined(uint256 vaultId, address follower, uint256 amount);
+    event SocialFollowerExited(uint256 vaultId, address follower, uint256 amount);
+    event SocialTradeMirrored(uint256 vaultId, address leader, bool isLong, uint256 notional);
 
     /**
      * @notice Lead trader creates a social vault. Followers can then join.
@@ -370,7 +377,7 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
             strategyDescription: strategy
         });
         leadTrader[msg.sender] = vaultId;
-        emit VaultCreated(vaultId, msg.sender, name);
+        emit SocialVaultCreated(vaultId, msg.sender, name);
     }
 
     /**
@@ -386,7 +393,7 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
         followingVault[msg.sender] = vaultId;
         sv.totalFollowers++;
         sv.totalAUM += amount;
-        emit FollowerJoined(vaultId, msg.sender, amount);
+        emit SocialFollowerJoined(vaultId, msg.sender, amount);
     }
 
     /**

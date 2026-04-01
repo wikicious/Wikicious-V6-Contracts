@@ -82,6 +82,7 @@ contract WikiVault is Ownable2Step, ReentrancyGuard, Pausable {
     event InsurancePayout(address indexed recipient, uint256 amount);
     event OperatorSet(address indexed op, bool enabled);
     event WithdrawalLimitsUpdated(uint256 daily, uint256 single);
+    event TimelockSet(address indexed timelock);
 
     modifier onlyOperator() {
         require(operators[msg.sender], "Vault: not operator");

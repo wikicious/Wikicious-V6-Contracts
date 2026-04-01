@@ -71,13 +71,13 @@ contract WikiMarketRegistry is Ownable2Step {
 
     // ── Chainlink feed addresses (Arbitrum Mainnet) ────────────────────────
     // Crypto
-    address constant CL_BTC_USD  = 0x6ce185539ad4fdAbeb5E459f19E539fa48094C2a; // Arbitrum BTC/USD ✅
+    address constant CL_BTC_USD  = 0x6ce185539aD4FDAbEb5E459F19E539FA48094C2a; // Arbitrum BTC/USD ✅
     address constant CL_ETH_USD  = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
-    address constant CL_ARB_USD  = 0xb2A824043730FE05F3DA2efaFa1CBbe83fa548D4;
+    address constant CL_ARB_USD  = 0xb2A824043730Fe05F3Da2EFAfa1CbBe83Fa548d4;
     address constant CL_SOL_USD  = 0x24ceA4b8ce57cdA5058b924B9B9987992450590c;
     address constant CL_BNB_USD  = 0x6970460aabF80C5BE983C6b74e5D06dEDCA95D4A;
     address constant CL_AVAX_USD = 0x8bf61728eeDCE2F32c456454d87B5d6eD6150208;
-    address constant CL_LINK_USD = 0x86E53CF1B873786aC51581d7288629498b4b2b52;
+    address constant CL_LINK_USD = 0x86e53cF1B873786AC51581d7288629498b4b2B52;
     address constant CL_MATIC_USD= 0x52099D4523531f678Dfc568a7B1e5038aadcE1d6;
     address constant CL_DOGE_USD = 0x9A7FB1b3950837a8D9b40517626E11D4127C098C;
     // Forex majors
@@ -87,7 +87,7 @@ contract WikiMarketRegistry is Ownable2Step {
     address constant CL_CHF_USD  = 0xe32AccC8c4eC03F6E75bd3621BfC9Fbb234E1FC3;
     address constant CL_CAD_USD  = 0xf6DA27749484843c4F02f5Ad1378ceE723dD61d4;
     address constant CL_AUD_USD  = 0x9854e9a850e7C354c1de177eA953a6b1fba8Fc22;
-    address constant CL_NZD_USD  = 0x0f82d66499C33cAbE7F8aD4F9dAD0c95ca36BaE0;
+    address constant CL_NZD_USD  = 0x0F82d66499C33cabe7F8Ad4f9Dad0c95cA36bAE0;
     // Metals
     address constant CL_XAU_USD  = 0x1F954Dc24a49708C26E0C1777f16750B5C6d5a2c;
     address constant CL_XAG_USD  = 0xC56765f04B248394CF1619D20dB8082Edbfa75b1; // Arbitrum XAG/USD ✅
@@ -100,7 +100,7 @@ contract WikiMarketRegistry is Ownable2Step {
     // ── Register all markets on deploy ─────────────────────────────────────
     function _registerAllMarkets() internal {
         // ── CRYPTO ────────────────────────────────────────────────────────
-        _add("BTC/USD",  "BTC", "USD", CAT_CRYPTO, SRC_CHAINLINK, 0x6ce185539ad4fdAbeb5E459f19E539fa48094C2a, bytes32(0), 0, 0, 12500, 50,  5, 2, 50_000_000e6, 50_000_000e6, 10e6,  10_000_000e6, 2, 10, 2);
+        _add("BTC/USD",  "BTC", "USD", CAT_CRYPTO, SRC_CHAINLINK, 0x6ce185539aD4FDAbEb5E459F19E539FA48094C2a, bytes32(0), 0, 0, 12500, 50,  5, 2, 50_000_000e6, 50_000_000e6, 10e6,  10_000_000e6, 2, 10, 2);
         _add("ETH/USD",  "ETH", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_ETH_USD,  bytes32(0), 0, 0, 12500, 50,  5, 2, 30_000_000e6, 30_000_000e6, 10e6,  5_000_000e6,  2, 10, 2);
         _add("SOL/USD",  "SOL", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_SOL_USD,  bytes32(0), 0, 0, 12500, 100, 5, 2, 10_000_000e6, 10_000_000e6, 10e6,  1_000_000e6,  2, 10, 2);
         _add("ARB/USD",  "ARB", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_ARB_USD,  bytes32(0), 0, 0, 12500, 100, 6, 3, 5_000_000e6,  5_000_000e6,  10e6,  500_000e6,   2, 10, 4);

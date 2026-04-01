@@ -2,6 +2,23 @@
 pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
+
+
+interface IWikiLiqMarket {
+    function activeAuctions() external view returns (uint256[] memory);
+    function getAuction(uint256 auctionId) external view returns (
+        address trader,
+        uint256 positionId,
+        uint256 collateralUsdc,
+        uint256 debtUsdc,
+        uint256 minBid,
+        uint256 endTime,
+        bool settled,
+        address winner,
+        uint256 winningBid
+    );
+}
+
 /**
  * @title WikiLiqAuctionUI
  * @notice Read-only aggregation layer over WikiLiquidationMarket.
