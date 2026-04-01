@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-/**
+/*
  * @title WikiTelegramGateway
  * @notice On-chain registry for Telegram bot sessions.
  *         Users link their Telegram account to their wallet once.

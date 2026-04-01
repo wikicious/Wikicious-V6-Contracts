@@ -123,7 +123,7 @@ contract WikiLeveragedYield is Ownable2Step, ReentrancyGuard, Pausable {
         // Stable 2× Loop (USDC)
         vaults[nextVaultId++] = VaultConfig({
             strategy:       Strategy.STABLE_LOOP,
-            name:           "USDC 2× Stable Loopunicode",
+            name:           "USDC 2x Stable Loopunicode",
             depositToken:   0xaf88d065e77c8cC2239327C5EDb3A432268e5831, // USDC
             yieldToken:     0xaf88d065e77c8cC2239327C5EDb3A432268e5831,
             lendingMarketId:0,

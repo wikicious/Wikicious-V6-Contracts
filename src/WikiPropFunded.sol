@@ -41,7 +41,7 @@ interface IWikiPropPoolForFunded {
     function availableCapital() external view returns (uint256);
 }
 
-contract requests capital from WikiPropPool
+/// contract requests capital from WikiPropPool
 ///      If pool insufficient → flash loan from Aave V3 as overflow
 ///   3. Position runs → P&L tracked in real time
 ///   4. Breach detected → account closed, pool capital returned, loss absorbed

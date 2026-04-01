@@ -684,8 +684,7 @@ contract WikiHybridLiquidityManager is Ownable2Step, ReentrancyGuard, Pausable {
     // Defaults
     uint256 public defaultExternalMaxLev = 100; // GMX V5 standard
 
-    /**
-     * @notice Returns the effective max leverage for a user considering routing.
+     /* @notice Returns the effective max leverage for a user considering routing.
      *
      * KEY INSIGHT:
      *   If the trade will be routed externally, the dynLev internal cap does NOT apply.

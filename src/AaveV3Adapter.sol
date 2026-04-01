@@ -17,8 +17,8 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
  */
 
 interface IAaveV3Pool {
-    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external nonReentrant;
-    function withdraw(address asset, uint256 amount, address to) external nonReentrant returns (uint256);
+    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
+    function withdraw(address asset, uint256 amount, address to) external  returns (uint256);
     function getReserveData(address asset) external view returns (
         uint256 configuration,
         uint128 liquidityIndex,
@@ -43,8 +43,8 @@ interface IAToken {
 }
 
 interface IExternalLender {
-    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external nonReentrant;
-    function withdraw(address asset, uint256 amount, address to) external nonReentrant returns (uint256);
+    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
+    function withdraw(address asset, uint256 amount, address to) external  returns (uint256);
     function getAPY() external view returns (uint256 apyBps);
     function getBalance(address asset) external view returns (uint256);
 }

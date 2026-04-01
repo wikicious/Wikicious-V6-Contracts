@@ -341,8 +341,6 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
     mapping(uint256 => SocialVault) public socialVaults;
     mapping(address => uint256)     public leadTrader;     // trader → vaultId they lead
     mapping(address => uint256)     public followingVault; // follower → vaultId
-    uint256 public nextVaultId;
-
     event VaultCreated(uint256 vaultId, address leadTrader, string name);
     event FollowerJoined(uint256 vaultId, address follower, uint256 amount);
     event FollowerExited(uint256 vaultId, address follower, uint256 amount);
