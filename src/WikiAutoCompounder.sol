@@ -432,7 +432,7 @@ contract WikiAutoCompounder is Ownable2Step, ReentrancyGuard {
             : _remainingLock(user);
 
         if (totalWIK > 0) {
-            WIK.safeApprove(address(staking), totalWIK);
+            WIK.forceApprove(address(staking), totalWIK);
             staking.lock(totalWIK, lockDuration);
             wikStaked = totalWIK;
         } else if (c.extendLock) {

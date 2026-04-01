@@ -240,7 +240,7 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
         uint256 margin = v.totalAUM * allocationBps / BPS;
         require(margin > 0 && USDC.balanceOf(address(this)) >= margin, "CT: insufficient funds");
 
-        USDC.safeApprove(address(perp), margin);
+        USDC.forceApprove(address(perp), margin);
         uint256 posId = perp.openPosition(marketId, isLong, margin, leverage, address(this));
         vaultPositions[vaultId].push(posId);
 
