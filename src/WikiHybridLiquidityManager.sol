@@ -432,7 +432,7 @@ contract WikiHybridLiquidityManager is Ownable2Step, ReentrancyGuard, Pausable {
 
         // Distribute kept fees
         if (feeKept > 0) {
-            USDC.safeApprove(address(splitter), feeKept);
+            USDC.forceApprove(address(splitter), feeKept);
             try splitter.receiveFees(feeKept) {} catch {}
         }
 
@@ -612,7 +612,7 @@ contract WikiHybridLiquidityManager is Ownable2Step, ReentrancyGuard, Pausable {
                 feeKept        = userFee > gmxFee ? userFee - gmxFee + (gmxFee * GMX_REFERRAL_BPS / BPS) : 0;
 
                 // Approve USDC for GMX
-                USDC.safeApprove(address(gmxRouter), collateral);
+                USDC.forceApprove(address(gmxRouter), collateral);
 
                 address[] memory emptyPath = new address[](0);
                 try gmxRouter.createOrder{value: 0}(IGMXExchangeRouter.CreateOrderParams({

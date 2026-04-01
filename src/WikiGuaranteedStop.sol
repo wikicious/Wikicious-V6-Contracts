@@ -375,15 +375,15 @@ contract WikiGuaranteedStop is Ownable2Step, ReentrancyGuard {
         uint256 toInsurance = premium - toBackstop - toOps;
 
         if (toBackstop > 0 && address(backstop) != address(0)) {
-            USDC.safeApprove(address(backstop), toBackstop);
+            USDC.forceApprove(address(backstop), toBackstop);
             try backstop.depositFee(toBackstop) {} catch {}
         }
         if (toOps > 0 && address(opsVault) != address(0)) {
-            USDC.safeApprove(address(opsVault), toOps);
+            USDC.forceApprove(address(opsVault), toOps);
             try opsVault.receiveAndInvest(toOps) {} catch {}
         }
         if (toInsurance > 0 && address(insurance) != address(0)) {
-            USDC.safeApprove(address(insurance), toInsurance);
+            USDC.forceApprove(address(insurance), toInsurance);
             try insurance.depositFee(toInsurance) {} catch {}
         }
         emit PremiumRouted(premium, toBackstop, toOps, toInsurance);

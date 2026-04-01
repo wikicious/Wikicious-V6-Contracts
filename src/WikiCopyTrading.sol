@@ -6,6 +6,13 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+
+
+interface IWikiPerp {
+    function openPosition(bytes32 marketId, bool isLong, uint256 margin, uint256 leverage, address trader) external returns (uint256 positionId);
+    function closePosition(uint256 positionId, address trader) external returns (int256 pnl);
+}
+
 /**
  * @title WikiCopyTrading
  * @notice Social trading vaults — top traders lead, followers mirror every trade.
@@ -240,7 +247,7 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
         uint256 margin = v.totalAUM * allocationBps / BPS;
         require(margin > 0 && USDC.balanceOf(address(this)) >= margin, "CT: insufficient funds");
 
-        USDC.safeApprove(address(perp), margin);
+        USDC.forceApprove(address(perp), margin);
         uint256 posId = perp.openPosition(marketId, isLong, margin, leverage, address(this));
         vaultPositions[vaultId].push(posId);
 

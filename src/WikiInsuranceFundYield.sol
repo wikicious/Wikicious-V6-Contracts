@@ -6,6 +6,12 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+
+
+interface IWikiFeeDistributor {
+    function receiveInsuranceYield(uint256 amount) external;
+}
+
 /**
  * @title WikiInsuranceFundYield
  * @notice Deploys idle WikiVault insurance fund USDC into WikiLending to earn

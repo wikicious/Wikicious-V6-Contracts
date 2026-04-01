@@ -209,7 +209,7 @@ contract WikiRevenueSplitter is Ownable2Step, ReentrancyGuard {
 
         // ── Forward to stakers ───────────────────────────────────────────────
         if (toStakers > 0 && address(staking) != address(0)) {
-            USDC.safeApprove(address(staking), toStakers);
+            USDC.forceApprove(address(staking), toStakers);
             try staking.distributeFees(toStakers) {
                 totalToStakers += toStakers;
             } catch {
@@ -222,12 +222,12 @@ contract WikiRevenueSplitter is Ownable2Step, ReentrancyGuard {
         if (toOps > 0) {
             if (address(opsVault) != address(0)) {
                 // Route to WikiOpsVault — auto-invests into yield strategies
-                USDC.safeApprove(address(opsVault), toOps);
+                USDC.forceApprove(address(opsVault), toOps);
                 try opsVault.receiveAndInvest(toOps) {
                     totalToOps += toOps;
                 } catch {
                     // Vault failed — send directly to wallet as fallback
-                    USDC.safeApprove(address(opsVault), 0);
+                    USDC.forceApprove(address(opsVault), 0);
                     USDC.safeTransfer(opsWallet, toOps);
                     totalToOps += toOps;
                 }
@@ -240,7 +240,7 @@ contract WikiRevenueSplitter is Ownable2Step, ReentrancyGuard {
 
         // ── Forward to Protocol-Owned Liquidity ──────────────────────────────
         if (toPOL > 0 && address(pol) != address(0)) {
-            USDC.safeApprove(address(pol), toPOL);
+            USDC.forceApprove(address(pol), toPOL);
             try pol.addFees(toPOL) {
                 totalToPOL += toPOL;
             } catch {
@@ -251,7 +251,7 @@ contract WikiRevenueSplitter is Ownable2Step, ReentrancyGuard {
 
         // ── Forward to safety / insurance ────────────────────────────────────
         if (toSafety > 0 && address(insurance) != address(0)) {
-            USDC.safeApprove(address(insurance), toSafety);
+            USDC.forceApprove(address(insurance), toSafety);
             try insurance.depositYield(toSafety) {
                 totalToSafety += toSafety;
             } catch {

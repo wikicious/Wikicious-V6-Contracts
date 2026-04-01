@@ -4,6 +4,23 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
+
+
+interface IWikiPerp {
+    function updateMarketCaps(uint256 marketIdx, uint256 maxLeverageBps, uint256 maxPositionSize, uint256 maxOILong, uint256 maxOIShort) external;
+    function marketsLength() external view returns (uint256);
+}
+
+interface IWikiVirtualAMM {
+    function setMarketMaxLeverage(uint256 marketIdx, uint256 maxLev) external;
+    function marketsLength() external view returns (uint256);
+}
+
+interface IWikiVault {
+    function insuranceFund() external view returns (uint256);
+    function protocolFees() external view returns (uint256);
+}
+
 /**
  * @title WikiDynamicLeverage
  * @notice Automatically adjusts maximum leverage and position size caps

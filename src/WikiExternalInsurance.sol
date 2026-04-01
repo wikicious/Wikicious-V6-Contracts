@@ -73,7 +73,7 @@ contract WikiExternalInsurance is Ownable2Step, ReentrancyGuard {
     IIdleYieldRouter public idleYieldRouter;
 
     function setIdleYieldRouter(address router) external onlyOwner {
-        idleYieldRouter = router;
+        idleYieldRouter = IIdleYieldRouter(router);
     }
 
     /// @notice Keeper calls this to deploy idle USDC to yield strategies

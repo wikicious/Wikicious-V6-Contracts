@@ -1,5 +1,22 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
+const { subtask } = require('hardhat/config');
+const { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } = require('hardhat/builtin-tasks/task-names');
+
+subtask(TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD, async (args, hre, runSuper) => {
+  if (args.solcVersion === '0.8.24') {
+    const compilerPath = require.resolve('solc/soljson.js');
+    return {
+      compilerPath,
+      isSolcJs: true,
+      version: '0.8.24',
+      longVersion: '0.8.24+local',
+    };
+  }
+
+  return runSuper();
+});
+
 
 // ─── REQUIRED ENV VARS ────────────────────────────────────────────────────────
 // Copy .env.example to .env and fill in before running any hardhat command.
@@ -9,6 +26,7 @@ const ALCHEMY_ARBITRUM  = process.env.ALCHEMY_ARBITRUM_URL;
 const ALCHEMY_SEPOLIA   = process.env.ALCHEMY_SEPOLIA_URL;
 const TENDERLY_RPC      = process.env.TENDERLY_RPC_URL;
 const ETHERSCAN_KEY     = process.env.ETHERSCAN_API_KEY;
+const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src';
 
 if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
   throw new Error('ALCHEMY_ARBITRUM_URL is required in .env for mainnet deployment');
@@ -20,10 +38,11 @@ module.exports = {
     settings: {
       optimizer: { enabled: true, runs: 200 },
       viaIR: true,
+      evmVersion: 'cancun',
     },
   },   
   paths: {
-    sources: "./src",
+    sources: SOURCE_DIR,
   },
   networks: {
     // ── Mainnet ──────────────────────────────────────────────────────────────
