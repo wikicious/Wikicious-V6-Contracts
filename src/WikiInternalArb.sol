@@ -418,7 +418,7 @@ contract WikiInternalArb is Ownable2Step, ReentrancyGuard, Pausable {
         require(netProfit >= p.minProfit, "InternalArb: below min profit"); // [A2]
 
         // ── Repay flash loan ──────────────────────────────────────────────
-        USDC.safeApprove(address(flashLoan), repayAmount);
+        USDC.forceApprove(address(flashLoan), repayAmount);
 
         // ── Distribute net profit ─────────────────────────────────────────
         _distributeProfits(p, fee, netProfit);
@@ -450,7 +450,7 @@ contract WikiInternalArb is Ownable2Step, ReentrancyGuard, Pausable {
 
         if (p.buyOnSpot) {
             // Buy token cheaply on WikiSpot
-            USDC.safeApprove(address(spot), amount / 2);
+            USDC.forceApprove(address(spot), amount / 2);
             uint256 tokenReceived = spot.swapExactIn(
                 p.poolId,
                 address(USDC),
@@ -487,7 +487,7 @@ contract WikiInternalArb is Ownable2Step, ReentrancyGuard, Pausable {
         (uint256 expectedTokenOut,) = spot.getAmountOut(cheapPoolId, address(USDC), amount);
         require(expectedTokenOut > 0, "InternalArb: no liquidity in cheap pool");
 
-        USDC.safeApprove(address(spot), amount);
+        USDC.forceApprove(address(spot), amount);
         uint256 tokenBought = spot.swapExactIn(
             cheapPoolId,
             address(USDC),
@@ -519,7 +519,7 @@ contract WikiInternalArb is Ownable2Step, ReentrancyGuard, Pausable {
 
         // Send to RevenueSplitter (→ 40% stakers / 30% POL / 20% treasury / 10% safety)
         if (toSplitter > 0) {
-            USDC.safeApprove(address(splitter), toSplitter);
+            USDC.forceApprove(address(splitter), toSplitter);
             try splitter.receiveFees(toSplitter) {} catch {
                 // If splitter fails, keep in contract for manual sweep
             }

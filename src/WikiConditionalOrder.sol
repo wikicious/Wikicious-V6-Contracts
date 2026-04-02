@@ -197,15 +197,15 @@ contract WikiConditionalOrder is Ownable2Step, ReentrancyGuard {
 
     function _executeAction(address owner_, Action memory a) internal {
         if (a.actionType == ActionType.OPEN_LONG) {
-            USDC.safeApprove(address(perp), a.amount);
+            USDC.forceApprove(address(perp), a.amount);
             perp.openPosition(a.marketId, true, a.amount, a.leverage);
         } else if (a.actionType == ActionType.OPEN_SHORT) {
-            USDC.safeApprove(address(perp), a.amount);
+            USDC.forceApprove(address(perp), a.amount);
             perp.openPosition(a.marketId, false, a.amount, a.leverage);
         } else if (a.actionType == ActionType.CLOSE_POSITION) {
             perp.closePosition(a.positionId);
         } else if (a.actionType == ActionType.ADD_MARGIN) {
-            USDC.safeApprove(address(perp), a.amount);
+            USDC.forceApprove(address(perp), a.amount);
             perp.addMargin(a.positionId, a.amount);
         } else if (a.actionType == ActionType.WITHDRAW) {
             USDC.safeTransfer(owner_, a.amount);

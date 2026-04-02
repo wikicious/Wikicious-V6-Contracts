@@ -7,6 +7,12 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+
+
+interface IWikiBackstop {
+    function absorbADLShortfall(uint256 amount) external;
+}
+
 /**
  * @title WikiADL — Auto-Deleveraging Engine
  * @notice Last-resort loss absorption after insurance fund is exhausted.

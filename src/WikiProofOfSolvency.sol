@@ -4,6 +4,10 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
+
+
+interface IWikiOpsVault { function totalValue() external view returns (uint256); }
+
 /**
  * @title WikiProofOfSolvency
  * @notice Publishes on-chain Merkle-tree proofs that the protocol holds

@@ -231,7 +231,7 @@ contract WikiBotVault is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
 
         // Route fee to revenue splitter
         if (performanceFee > 0) {
-            USDC.safeApprove(address(revenueSplitter), performanceFee);
+            USDC.forceApprove(address(revenueSplitter), performanceFee);
             try revenueSplitter.receiveFees(performanceFee) {} catch {
                 USDC.safeTransfer(owner(), performanceFee);
             }
@@ -377,7 +377,7 @@ contract WikiBotVault is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
             vs.currentNAV -= fee;
             vs.totalFeesCollected += fee;
             if (address(revenueSplitter) != address(0) && USDC.balanceOf(address(this)) >= fee) {
-                USDC.safeApprove(address(revenueSplitter), fee);
+                USDC.forceApprove(address(revenueSplitter), fee);
                 try revenueSplitter.receiveFees(fee) {} catch {}
             }
         }

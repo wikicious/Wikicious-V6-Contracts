@@ -4,6 +4,12 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+
+interface IEigenLayerStrategyManager {
+    function depositIntoStrategy(address strategy, address token, uint256 amount) external returns (uint256);
+}
+
 /**
  * @title WikiLiquidRestaking — EigenLayer Liquid Restaking Module
  *

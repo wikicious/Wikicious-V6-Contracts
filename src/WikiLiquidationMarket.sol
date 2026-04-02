@@ -180,7 +180,7 @@ contract WikiLiquidationMarket is Ownable2Step, ReentrancyGuard, Pausable {
         uint256 toInsurance = toProtocol / 2;
         uint256 toSplitter  = toProtocol - toInsurance;
         if (toInsurance > 0) try vault.fundInsurance(toInsurance) {} catch {}
-        if (toSplitter  > 0) { USDC.safeApprove(address(splitter), toSplitter); try splitter.receiveFees(toSplitter) {} catch {} }
+        if (toSplitter  > 0) { USDC.forceApprove(address(splitter), toSplitter); try splitter.receiveFees(toSplitter) {} catch {} }
 
         // Pay opener reward
         if (toOpener > 0) USDC.safeTransfer(a.opener, toOpener);
