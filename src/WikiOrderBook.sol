@@ -300,8 +300,8 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
                 }
 
                 if (!maker.active || maker.baseRemaining == 0) {
-                    uint256 tmp = nextOrder[makerOrderId];
-                    makerOrderId = tmp;
+                    uint256 nextMakerOrderId = nextOrder[makerOrderId];
+                    makerOrderId = nextMakerOrderId;
                     continue;
                 }
 
@@ -342,8 +342,8 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
 
                 emit OrderFilled(makerOrderId, takerOrderId, taker.maker, fillBase, fillQuote, takerFee);
 
-                uint256 tmp = nextOrder[makerOrderId];
-                if (maker.baseRemaining == 0) makerOrderId = tmp;
+                uint256 nextMaker = nextOrder[makerOrderId];
+                if (maker.baseRemaining == 0) makerOrderId = nextMaker;
                 else break;
             }
 
@@ -545,7 +545,7 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
         bool    isBuy,
         uint256 size,
         uint256 trailBps
-    ) external nonReentrant whenNotPaused returns (uint256 orderId) {
+    ) external nonReentrant returns (uint256 orderId) {
         require(trailBps >= 10 && trailBps <= 5000, "OB: trail 0.1%-50%");
         require(size > 0, "OB: zero size");
 

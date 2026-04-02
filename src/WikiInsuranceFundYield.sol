@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 interface IWikiFeeDistributor {
     function receiveInsuranceYield(uint256 amount) external;
+    function receiveFee(uint8 source, uint256 amount, address payer) external;
 }
 
 /**
@@ -20,11 +21,7 @@ interface IWikiFeeDistributor {
  * HOW IT WORKS
  * ─────────────────────────────────────────────────────────────────────────
  * 1. WikiVault insurance fund normally sits idle earning 0%.
- * 2. This interface IWikiFeeDistributor {
-    function receiveFee(uint8 source, uint256 amount, address payer) external;
-}
-
-contract holds a portion of that USDC and supplies it to
+ * 2. This contract holds a portion of that USDC and supplies it to
  *    WikiLending USDC market (30-day maturity max).
  * 3. WikiLending USDC earns ~8% APY based on borrower interest.
  * 4. Yield is harvested daily and routed to WikiFeeDistributor.
@@ -77,6 +74,7 @@ contract WikiInsuranceFundYield is Ownable2Step, ReentrancyGuard {
     
     event YieldHarvested(uint256 yieldAmount, uint256 timestamp);
     event Deployed(uint256 amount, uint256 wTokens);
+    event Recalled(uint256 usdcRecovered);
     event EmergencyRecall(uint256 usdcRecovered);
 
     // ── Constructor ────────────────────────────────────────────────────────
