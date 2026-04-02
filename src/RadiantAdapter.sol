@@ -37,7 +37,7 @@ interface IExternalLender {
 contract RadiantAdapter
     // Events
     // AUDIT: emit events on all state changes
- is IExternalLender, Ownable2Step {
+ is IExternalLender, Ownable2Step, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     IRadiantPool public constant RADIANT_POOL = IRadiantPool(0xF4B1486DD74D07706052A33d31d7c0AAFD0659E1);
