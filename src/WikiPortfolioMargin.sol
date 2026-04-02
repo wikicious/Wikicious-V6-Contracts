@@ -80,6 +80,13 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
         uint256[] positionIds;       // WikiPerp position IDs in this account
     }
 
+    struct CrossMarginAccount {
+        int256  netDelta;
+        uint256 totalMarginPosted;
+        uint256 effectiveMargin;
+        bool    crossEnabled;
+    }
+
     // ──────────────────────────────────────────────────────────────────
     //  Storage
     // ──────────────────────────────────────────────────────────────────
@@ -87,6 +94,8 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
 
     mapping(address => PMAccount)   public accounts;
     mapping(address => bool)        public allowedContracts; // WikiPerp etc.
+    mapping(address => bool)        public keepers;
+    mapping(address => CrossMarginAccount) public crossAccounts;
 
     uint256 public totalRevenue;
     uint256 public totalFeeCollected;
