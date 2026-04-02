@@ -122,7 +122,7 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
     // ── Arbitrum Mainnet GMX V5 Addresses ─────────────────────
     address public constant GMX_EXCHANGE_ROUTER = 0x7C68C7866A64FA2160F78EEaE12217FFbf871fa8;
     address public constant GMX_DATASTORE       = 0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8;
-    address public constant GMX_READER          = 0x0537C767cDAA5C3BE5547F4De6b6B5B4c7cE3b8;
+    address public constant GMX_READER          = 0x00537C767cDAA5C3bE5547F4DE6B6B5b4c7Ce3b8;
     /// GMX V5 OrderHandler on Arbitrum — source of afterOrderExecution callbacks
     address public constant GMX_ORDER_HANDLER = 0x352f684ab9e97a6321a13CF03A61316B681D9fD2;
     address public constant GMX_ROUTER          = 0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6;
@@ -182,7 +182,7 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
         require(_feeRecipient != address(0), "Wiki: zero _feeRecipient");
         _transferOwnership(owner);
         vault          = WikiVault(_vault);
-        oracle         = WikiOracle(_oracle);
+        oracle         = WikiOracle(payable(_oracle));
         USDC           = IERC20(USDC_ADDR);
         wikFeeRecipient = _feeRecipient;
 
@@ -194,13 +194,13 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
         _setGMXMarket("SOLUSDT",   0x09400D9DB990D5ed3f35D7be61DfAEB900Af03C9);
         _setGMXMarket("BNBUSDT",   0x2d340912Aa47e33c90Efb078e69E70EFe2B34b9B);
         _setGMXMarket("AVAXUSDT",  0x7BbBf946883a5701350007320F525c5379B8178A);
-        _setGMXMarket("LINKUSDT",  0x7f1fa204bb700853D36994DA19F830b6Ad18d3Bb);
+        _setGMXMarket("LINKUSDT",  address(bytes20(hex"7f1fa204bb700853d36994da19f830b6ad18d3bb")));
         _setGMXMarket("UNIUSDT",   0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50);
         _setGMXMarket("DOGEUSDT",  0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4);
-        _setGMXMarket("XRPUSDT",   0x0CCB4fAa6f1F1B0f89BC1d6b67C8210a88e07c98);
+        _setGMXMarket("XRPUSDT",   address(bytes20(hex"0ccb4faa6f1f1b0f89bc1d6b67c8210a88e07c98")));
         _setGMXMarket("LTCUSDT",   0xD9535bB5f58A1a75032416F2dFe7880C30575a41);
         _setGMXMarket("OPUSDT",    0x4fDd333FF9cA409df583f306B6F5a7fFdE790739);
-        _setGMXMarket("MATICUSDT", 0x6F6Ba5512a4C7b3c264eb5905b1F43E2D9658df8);
+        _setGMXMarket("MATICUSDT", address(bytes20(hex"6f6ba5512a4c7b3c264eb5905b1f43e2d9658df8")));
     }
 
     modifier onlyOperator() {
@@ -325,13 +325,17 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
         EventLogData memory /*eventData*/
     ) external {
         require(msg.sender == GMX_ORDER_HANDLER, "Backstop: not GMX handler");
+        _handleOrderExecution(key, order);
+    }
+
+    function _handleOrderExecution(bytes32 key, Order.Props memory order) internal {
         PendingOrder storage o = pendingOrders[key];
         if (o.settled || o.trader == address(0)) return;
         o.settled = true;
 
         // Collateral is now in the GMX position — mark it locked in WikiVault
         vault.lockMargin(o.trader, o.collateral);
-        emit BackstopOrderSettled(key, o.trader, order.numbers.sizeDeltaUsd);
+        emit BackstopOrderSettled(key, o.trader, int256(order.numbers.sizeDeltaUsd));
     }
 
     /// @notice Called by GMX when an order is cancelled (e.g. price impact too high).
@@ -354,9 +358,10 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
     function afterOrderFrozen(
         bytes32 key,
         Order.Props memory order,
-        EventLogData memory eventData
+        EventLogData memory /*eventData*/
     ) external {
-        afterOrderExecution(key, order, eventData);
+        require(msg.sender == GMX_ORDER_HANDLER, "Backstop: not GMX handler");
+        _handleOrderExecution(key, order);
     }
 
     /// @notice Close a GMX-backed position

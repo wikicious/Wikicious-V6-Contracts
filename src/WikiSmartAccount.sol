@@ -236,13 +236,14 @@ contract WikiSmartAccount is ReentrancyGuard {
 
     // ERC-4337 compatible functions referenced by WikiPaymaster
     function addToken(address token) external {
-        require(msg.sender == owner() || msg.sender == factory, "SA: not authorised");
+        require(msg.sender == owner || msg.sender == factory, "SA: not authorised");
         acceptedPaymentTokens[token] = true;
     }
 
     function depositToEntryPoint(uint256 amount) external payable {
-        require(msg.sender == owner(), "SA: not owner");
-        entryPointAddr.call{value: amount}(abi.encodeWithSignature("depositTo(address)", address(this)));
+        require(msg.sender == owner, "SA: not owner");
+        (bool ok,) = entryPointAddr.call{value: amount}(abi.encodeWithSignature("depositTo(address)", address(this)));
+        require(ok, "SA: deposit failed");
     }
 
     mapping(address => bool) public acceptedPaymentTokens;

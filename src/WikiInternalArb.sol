@@ -626,7 +626,7 @@ contract WikiInternalArb is Ownable2Step, ReentrancyGuard, Pausable {
      */
     function stats() external view returns (
         uint256 totalProfit,
-        uint256 arbCount,
+        uint256 totalArbs,
         uint256 toStakers,
         uint256 toInsurance,
         uint256 toKeepers,
