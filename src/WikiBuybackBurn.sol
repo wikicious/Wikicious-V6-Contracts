@@ -42,6 +42,20 @@ interface IUniswapV3Router {
     function exactInputSingle(ExactInputSingleParams calldata params) external returns (uint256 amountOut);
 }
 
+interface IQuoterV5 {
+    struct QuoteExactInputSingleParams {
+        address tokenIn;
+        address tokenOut;
+        uint256 amountIn;
+        uint24  fee;
+        uint160 sqrtPriceLimitX96;
+    }
+
+    function quoteExactInputSingle(QuoteExactInputSingleParams memory params)
+        external
+        returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate);
+}
+
 interface IWIKToken {
     function burn(uint256 amount) external;
     function balanceOf(address account) external view returns (uint256);
@@ -73,6 +87,7 @@ contract WikiBuybackBurn is Ownable2Step, ReentrancyGuard {
     IERC20           public immutable USDC;
     IWIKToken        public immutable WIK;
     IUniswapV3Router public immutable router;
+    address public constant UNISWAP_QUOTER_V5 = 0x61fFE014bA17989E743c5F6cB21bF9697530B21e;
 
     // Uniswap V3 WIK/USDC pool fee tier (0.3% = 3000)
     uint24 public poolFee = 3000;
@@ -191,7 +206,7 @@ contract WikiBuybackBurn is Ownable2Step, ReentrancyGuard {
                 tokenIn:           address(USDC),
                 tokenOut:          address(WIK),
                 amountIn:          usdcAmount,
-                fee:               FEE_TIER,
+                fee:               poolFee,
                 sqrtPriceLimitX96: 0
             })
         ) returns (uint256 amountOut, uint160, uint32, uint256) {
