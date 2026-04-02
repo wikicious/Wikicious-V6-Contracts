@@ -325,6 +325,10 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
         EventLogData memory /*eventData*/
     ) external {
         require(msg.sender == GMX_ORDER_HANDLER, "Backstop: not GMX handler");
+        _handleOrderExecution(key, order);
+    }
+
+    function _handleOrderExecution(bytes32 key, Order.Props memory order) internal {
         PendingOrder storage o = pendingOrders[key];
         if (o.settled || o.trader == address(0)) return;
         o.settled = true;
@@ -354,9 +358,10 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
     function afterOrderFrozen(
         bytes32 key,
         Order.Props memory order,
-        EventLogData memory eventData
+        EventLogData memory /*eventData*/
     ) external {
-        afterOrderExecution(key, order, eventData);
+        require(msg.sender == GMX_ORDER_HANDLER, "Backstop: not GMX handler");
+        _handleOrderExecution(key, order);
     }
 
     /// @notice Close a GMX-backed position

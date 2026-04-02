@@ -300,8 +300,8 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
                 }
 
                 if (!maker.active || maker.baseRemaining == 0) {
-                    uint256 tmp = nextOrder[makerOrderId];
-                    makerOrderId = tmp;
+                    uint256 nextMakerOrderId = nextOrder[makerOrderId];
+                    makerOrderId = nextMakerOrderId;
                     continue;
                 }
 
@@ -342,8 +342,8 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
 
                 emit OrderFilled(makerOrderId, takerOrderId, taker.maker, fillBase, fillQuote, takerFee);
 
-                uint256 tmp = nextOrder[makerOrderId];
-                if (maker.baseRemaining == 0) makerOrderId = tmp;
+                uint256 nextMaker = nextOrder[makerOrderId];
+                if (maker.baseRemaining == 0) makerOrderId = nextMaker;
                 else break;
             }
 
