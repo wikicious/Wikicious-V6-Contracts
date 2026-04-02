@@ -518,15 +518,16 @@ contract WikiVirtualAMM is Ownable2Step, ReentrancyGuard, Pausable {
      */
     function setMarketMaxLeverage(uint256 marketIdx, uint256 maxLev) external {
         require(msg.sender == owner() || msg.sender == address(dynLev), "vAMM: not authorized");
-        require(marketIdx < markets.length, "vAMM: bad market");
+        require(marketIdx < marketIds.length, "vAMM: bad market");
         require(maxLev >= 1 && maxLev <= 2000, "vAMM: lev range");
-        markets[marketIdx].maxLeverage = maxLev;
+        bytes32 marketId = marketIds[marketIdx];
+        markets[marketId].maxLeverage = maxLev;
         // initMarginRatio = 1/leverage in BPS. At 2000x = 5 bps = 0.05%.
         // Use PRECISION scaling to avoid integer truncation at high leverage.
-        markets[marketIdx].initMarginRatio = maxLev <= BPS ? BPS / maxLev : 1;
+        markets[marketId].initMarginRatio = maxLev <= BPS ? BPS / maxLev : 1;
     }
 
-    function marketsLength() external view returns (uint256) { return markets.length; }
+    function marketsLength() external view returns (uint256) { return marketIds.length; }
 
     function getInsuranceFund() external view returns (uint256) { return insuranceFund; }
 

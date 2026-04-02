@@ -31,6 +31,7 @@ interface IWikiGMXBackstop {
 
 interface IWikiDynamicLeverage {
     function maxLeverageFor(address user) external view returns (uint256);
+    function maxPositionSizeFor(address user) external view returns (uint256);
     function currentCaps() external view returns (
         uint256 maxLeverage, uint256 maxPositionUsdc, uint256 maxOIPerMarket,
         uint256 insuranceFund, uint256 tierIdx, string memory tierName
@@ -166,7 +167,7 @@ contract WikiPerp is Ownable2Step, ReentrancyGuard, Pausable {
         require(_oracle != address(0), "Wiki: zero _oracle");
         require(owner != address(0), "Wiki: zero owner");
         vault  = WikiVault(_vault);
-        oracle = WikiOracle(_oracle);
+        oracle = WikiOracle(payable(_oracle));
     }
 
     // ── Market management ──────────────────────────────────────────────────
@@ -525,7 +526,7 @@ contract WikiPerp is Ownable2Step, ReentrancyGuard, Pausable {
     function getUnrealizedPnL(uint256 posId) external view returns (int256) {
         Position storage pos = positions[posId];
         if (!pos.open) return 0;
-        (uint256 price,) = oracle.getPriceReadOnly(markets[pos.marketIndex].marketId);
+        (uint256 price,) = oracle.getPrice(markets[pos.marketIndex].marketId);
         return _calcPnL(pos, price);
     }
 
@@ -553,6 +554,17 @@ contract WikiPerp is Ownable2Step, ReentrancyGuard, Pausable {
         uint256 maxChange = (mkt.openInterestLong + mkt.openInterestShort + sizeChange)
             * MAX_OI_CHANGE_BPS / BPS;
         require(mkt.oiChangesThisBlock <= maxChange + 1e12, "Perp: OI change rate exceeded");
+    }
+
+    function _min256(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a < b ? a : b;
+    }
+
+    function _getDynMaxPos(uint256 configuredMaxPos) internal view returns (uint256) {
+        if (address(dynLev) == address(0)) return configuredMaxPos;
+        uint256 dynCap = dynLev.maxPositionSizeFor(msg.sender);
+        if (dynCap == 0) return configuredMaxPos;
+        return _min256(configuredMaxPos, dynCap);
     }
 
     receive() external payable {}
