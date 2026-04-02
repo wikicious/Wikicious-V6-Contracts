@@ -52,7 +52,7 @@ contract WikiSpot is Ownable2Step, ReentrancyGuard {
     event LiquidityRemoved(uint256 indexed poolId, address indexed lp, uint256 amtA, uint256 amtB, uint256 lpBurned);
     event Swap(uint256 indexed poolId, address indexed trader, address tokenIn, uint256 amtIn, address tokenOut, uint256 amtOut);
 
-    constructor(address owner, address feeRecipient) Ownable2Step() {
+    constructor(address owner, address feeRecipient) Ownable(owner) {
         require(owner != address(0), "Wiki: zero owner");
         require(feeRecipient != address(0), "Wiki: zero feeRecipient");
         _transferOwnership(owner);

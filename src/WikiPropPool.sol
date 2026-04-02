@@ -73,6 +73,7 @@ contract WikiPropPool is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
     uint256 public constant BPS            = 10000;
 
     // Events
+    event YieldReceived(uint256 amount, string source);
     event Deposited(address indexed lp, uint256 usdc, uint256 wpl);
     event Withdrawn(address indexed lp, uint256 usdc, uint256 wpl);
     event YieldAdded(uint256 amount, string source);

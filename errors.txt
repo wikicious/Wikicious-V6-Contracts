@@ -1,0 +1,523 @@
+## AaveV3Adapter.sol
+DeclarationError: Undeclared identifier.
+  --> AaveV3Adapter.sol:91:14:
+   |
+91 |         emit Supplied(amount, A_USDC.balanceOf(onBehalfOf));
+   |              ^^^^^^^^
+---
+DeclarationError: Undeclared identifier. Did you mean "withdrawn" or "withdraw"?
+   --> AaveV3Adapter.sol:102:14:
+    |
+102 |         emit Withdrawn(withdrawn);
+    |              ^^^^^^^^^
+---
+
+## RadiantAdapter.sol
+DeclarationError: Identifier not found or not unique.
+  --> RadiantAdapter.sol:53:102:
+   |
+53 |     function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external nonReentrant override onlyAggregator {
+   |                                                                                                      ^^^^^^^^^^^^
+---
+
+## WikiADL.sol
+DeclarationError: Identifier not found or not unique.
+   --> WikiADL.sol:150:5:
+    |
+150 |     IWikiVAMM    public vamm;
+    |     ^^^^^^^^^
+---
+
+## WikiAgenticDAO.sol
+TypeError: Wrong argument count for struct constructor: 16 arguments given but expected 15.
+   --> WikiAgenticDAO.sol:113:25:
+    |
+113 |         proposals[id] = Proposal({
+    |                         ^ (Relevant source part starts here and spans across multiple lines).
+---
+
+## WikiAutoCompounder.sol
+DeclarationError: Identifier not found or not unique.
+   --> WikiAutoCompounder.sol:139:5:
+    |
+139 |     IWikiTokenVesting public           vesting;
+    |     ^^^^^^^^^^^^^^^^^
+---
+
+## WikiBondingPOL.sol
+TypeError: Type uint256 is not implicitly convertible to expected type address.
+   --> WikiBondingPOL.sol:118:45:
+    |
+118 |         require(dailyBondVolume[bondTypeId][today] + lpValueUSDC <= bt.maxBondPerDay, "Bond: daily limit exceeded");
+    |                                             ^^^^^
+---
+TypeError: Type uint256 is not implicitly convertible to expected type address.
+   --> WikiBondingPOL.sol:122:37:
+    |
+122 |         dailyBondVolume[bondTypeId][today] += lpValueUSDC;
+    |                                     ^^^^^
+---
+
+## WikiBuybackBurn.sol
+DeclarationError: Undeclared identifier.
+   --> WikiBuybackBurn.sol:189:13:
+    |
+189 |         try IQuoterV5(UNISWAP_QUOTER_V5).quoteExactInputSingle(
+    |             ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiBuybackBurn.sol:189:23:
+    |
+189 |         try IQuoterV5(UNISWAP_QUOTER_V5).quoteExactInputSingle(
+    |                       ^^^^^^^^^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiBuybackBurn.sol:190:13:
+    |
+190 |             IQuoterV5.QuoteExactInputSingleParams({
+    |             ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiBuybackBurn.sol:194:36:
+    |
+194 |                 fee:               FEE_TIER,
+    |                                    ^^^^^^^^
+---
+
+## WikiGMXBackstop.sol
+DeclarationError: Undeclared identifier. "afterOrderExecution" is not (or not yet) visible at this point.
+   --> WikiGMXBackstop.sol:359:9:
+    |
+359 |         afterOrderExecution(key, order, eventData);
+    |         ^^^^^^^^^^^^^^^^^^^
+---
+
+## WikiIndexBasket.sol
+TypeError: Built-in binary operator == cannot be applied to types tuple(bool,bytes memory) and bytes memory.
+   --> WikiIndexBasket.sol:147:39:
+    |
+147 |             (uint256 p, uint256 ts) = _oracle.call(abi.encodeWithSignature("getPrice(bytes32)", _components[i].marketId))
+    |                                       ^ (Relevant source part starts here and spans across multiple lines).
+---
+
+## WikiInsuranceFundYield.sol
+DeclarationError: Undeclared identifier.
+   --> WikiInsuranceFundYield.sol:170:14:
+    |
+170 |         emit Recalled(usdcOut);
+    |              ^^^^^^^^
+---
+
+## WikiLiqAuctionUI.sol
+TypeError: Invalid type, expected bool but got uint256.
+   --> WikiLiqAuctionUI.sol:144:44:
+    |
+144 |             uint256, uint256 currentPrice, uint256, uint256 endTime, bool settled
+    |                                            ^^^^^^^
+---
+TypeError: Invalid type, expected address but got uint256.
+   --> WikiLiqAuctionUI.sol:144:53:
+    |
+144 |             uint256, uint256 currentPrice, uint256, uint256 endTime, bool settled
+    |                                                     ^^^^^^^^^^^^^^^
+---
+TypeError: Invalid type, expected uint256 but got bool.
+   --> WikiLiqAuctionUI.sol:144:70:
+    |
+144 |             uint256, uint256 currentPrice, uint256, uint256 endTime, bool settled
+    |                                                                      ^^^^^^^^^^^^
+---
+
+## WikiLiquidRestaking.sol
+DeclarationError: Undeclared identifier.
+   --> WikiLiquidRestaking.sol:116:14:
+    |
+116 |         emit Deposited(msg.sender, token, amount, wLRTMinted);
+    |              ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier. Did you mean "withdraw"?
+   --> WikiLiquidRestaking.sol:138:14:
+    |
+138 |         emit Withdrawn(msg.sender, token, tokenAmount, wLRTAmount);
+    |              ^^^^^^^^^
+---
+
+## WikiLiquidationInsurance.sol
+DeclarationError: Identifier not found or not unique.
+   --> WikiLiquidationInsurance.sol:140:5:
+    |
+140 |     IIdleYieldRouter public idleYieldRouter;
+    |     ^^^^^^^^^^^^^^^^
+---
+
+## WikiLiquidationMarket.sol
+TypeError: Member "isLiquidatable" not found or not visible after argument-dependent lookup in contract IWikiPerp.
+   --> WikiLiquidationMarket.sol:116:17:
+    |
+116 |         require(perp.isLiquidatable(posId),      "LiqMkt: not liquidatable"); // [A1]
+    |                 ^^^^^^^^^^^^^^^^^^^
+---
+
+## WikiLiquidator.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPerp.sol:227:15:
+    |
+227 |             ? _min256(mkt.maxLeverage, dynLev.maxLeverageFor(msg.sender))
+    |               ^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPerp.sol:236:55:
+    |
+236 |             traderOI[msg.sender][marketIdx] + size <= _getDynMaxPos(mkt.maxPositionSizePerUser),
+    |                                                       ^^^^^^^^^^^^^
+---
+
+## WikiMarketRegistry.sol
+TypeError: Invalid type for argument in function call. Invalid implicit conversion from int_const 1600...(68 digits omitted)...1087 to bytes32 requested.
+   --> WikiMarketRegistry.sol:147:73:
+    |
+147 |  ... T_FOREX_EXOTIC,SRC_PYTH,address(0),0x389d889017db82bf42141f23b61b8de938a4e2d156e7460f2ca5b306ca997df,0,0,2000,50,8,4,5_000_000e6,5_000_ ...
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---
+TypeError: Invalid type for argument in function call. Invalid implicit conversion from int_const 3232...(68 digits omitted)...7538 to bytes32 requested.
+   --> WikiMarketRegistry.sol:157:73:
+    |
+157 |  ... T_FOREX_EXOTIC,SRC_PYTH,address(0),0x7254abad1770cabc0a58617e79b20e0de38f41cee77bd93e3c0b3e8b3d56e02,0,0,2000,50,5,2,5_000_000e6,5_000_ ...
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---
+TypeError: Invalid type for argument in function call. Invalid implicit conversion from int_const 1152...(71 digits omitted)...7699 to bytes32 requested.
+   --> WikiMarketRegistry.sol:189:67:
+    |
+189 |  ... SD",CAT_METALS,SRC_PYTH,address(0),0x9f4e8c5d6b3a1e7f2a8d4c0b9e6f3a2b5c8d1e4f7a0b3c6d9e2f5a8b1c4d7e0f3,0,0,5000,20,5,2,10_000_000e6,10_00 ...
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---
+
+## WikiOpsVault.sol
+DeclarationError: Undeclared identifier.
+   --> WikiOpsVault.sol:168:14:
+    |
+168 |         emit Received(amount, totalDeposited);
+    |              ^^^^^^^^
+---
+DeclarationError: Undeclared identifier. Did you mean "rebalance"?
+   --> WikiOpsVault.sol:250:14:
+    |
+250 |         emit Rebalanced(toLending, toBackstop, toFunding, idleAfter);
+    |              ^^^^^^^^^^
+---
+
+## WikiOrderBook.sol
+DeclarationError: Identifier not found or not unique.
+   --> WikiOrderBook.sol:548:29:
+    |
+548 |     ) external nonReentrant whenNotPaused returns (uint256 orderId) {
+    |                             ^^^^^^^^^^^^^
+---
+
+## WikiPOL.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPOL.sol:146:14:
+    |
+146 |         emit LiquidityAdded(usdcAmount, wikAmount, lpReceived);
+    |              ^^^^^^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPOL.sol:227:14:
+    |
+227 |         emit LiquidityRemoved(uOut, wOut, lpAmount);
+    |              ^^^^^^^^^^^^^^^^
+---
+
+## WikiPaymaster.sol
+DeclarationError: Identifier "userOp.paymasterAndData" not found.
+   --> WikiPaymaster.sol:117:43:
+    |
+117 |             assembly { token := mload(add(userOp.paymasterAndData, 52)) }
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^
+---
+
+## WikiPerp.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPerp.sol:227:15:
+    |
+227 |             ? _min256(mkt.maxLeverage, dynLev.maxLeverageFor(msg.sender))
+    |               ^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPerp.sol:236:55:
+    |
+236 |             traderOI[msg.sender][marketIdx] + size <= _getDynMaxPos(mkt.maxPositionSizePerUser),
+    |                                                       ^^^^^^^^^^^^^
+---
+
+## WikiPortfolioMargin.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPortfolioMargin.sol:409:17:
+    |
+409 |         require(keepers[msg.sender] || allowedContracts[msg.sender], "PM: not keeper");
+    |                 ^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPortfolioMargin.sol:431:9:
+    |
+431 |         crossAccounts[msg.sender].crossEnabled = true;
+    |         ^^^^^^^^^^^^^
+---
+DeclarationError: Identifier not found or not unique.
+   --> WikiPortfolioMargin.sol:438:9:
+    |
+438 |         CrossMarginAccount storage acc = crossAccounts[user];
+    |         ^^^^^^^^^^^^^^^^^^
+---
+
+## WikiPortfolioTracker.sol
+TypeError: Function returns 10 values, but returns clause has 7 variables.
+   --> WikiPortfolioTracker.sol:145:82:
+    |
+145 |                 try IWikiBotVault(registry.botVault).getUserDashboard(trader, i) returns (
+    |                                                                                  ^ (Relevant source part starts here and spans across multiple lines).
+---
+TypeError: Invalid type, expected uint256 but got bool.
+   --> WikiPortfolioTracker.sol:146:108:
+    |
+146 |                     uint256 shares, uint256 val, uint256 dep, int256 pnl, uint256 /*fee*/, uint256 /*ts*/, bool /*active*/
+    |                                                                                                            ^^^^
+---
+TypeError: Function returns 8 values, but returns clause has 7 variables.
+   --> WikiPortfolioTracker.sol:170:80:
+    |
+170 |             try IWikiTradeHistory(registry.tradeHistory).getTaxSummary(trader) returns (
+    |                                                                                ^ (Relevant source part starts here and spans across multiple lines).
+---
+TypeError: Invalid type, expected int256 but got uint256.
+   --> WikiPortfolioTracker.sol:171:116:
+    |
+171 |                 int256 totalPnl, uint256 fees, uint256 /*unused*/, uint256 trades, uint256 /*u2*/, uint256 /*u3*/, uint256 /*u4*/
+    |                                                                                                                    ^^^^^^^
+---
+
+## WikiProofOfSolvency.sol
+DeclarationError: Identifier not found or not unique.
+  --> WikiProofOfSolvency.sol:91:5:
+   |
+91 |     IWikiVault     public vault;
+   |     ^^^^^^^^^^
+---
+
+## WikiPropEval.sol
+TypeError: Types in storage containing (nested) mappings cannot be assigned to.
+   --> WikiPropEval.sol:283:9:
+    |
+283 |         evals[evalId] = EvalAccount({
+    |         ^^^^^^^^^^^^^
+---
+TypeError: Struct containing a (nested) mapping cannot be constructed.
+   --> WikiPropEval.sol:283:25:
+    |
+283 |         evals[evalId] = EvalAccount({
+    |                         ^ (Relevant source part starts here and spans across multiple lines).
+---
+
+## WikiPropFunded.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPropFunded.sol:317:17:
+    |
+317 |                 _uint2str(effectiveCap),
+    |                 ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPropFunded.sol:319:17:
+    |
+319 |                 _uint2str(acc.tier),
+    |                 ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPropFunded.sol:653:72:
+    |
+653 |             IWikiPropPoolForFunded(propPool).returnCapital(acc.trader, alloc, 0, loss > alloc ? alloc : loss);
+    |                                                                        ^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPropFunded.sol:653:89:
+    |
+653 |             IWikiPropPoolForFunded(propPool).returnCapital(acc.trader, alloc, 0, loss > alloc ? alloc : loss);
+    |                                                                                         ^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPropFunded.sol:653:97:
+    |
+653 |             IWikiPropPoolForFunded(propPool).returnCapital(acc.trader, alloc, 0, loss > alloc ? alloc : loss);
+    |                                                                                                 ^^^^^
+---
+
+## WikiPropPool.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPropPool.sol:213:14:
+    |
+213 |         emit YieldReceived(amount, source);
+    |              ^^^^^^^^^^^^^
+---
+
+## WikiPropPoolYield.sol
+DeclarationError: Undeclared identifier.
+   --> WikiPropPoolYield.sol:144:14:
+    |
+144 |         emit YieldDeployed(toAave, toLending, block.timestamp);
+    |              ^^^^^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPropPoolYield.sol:171:14:
+    |
+171 |         emit YieldRecalled(recallAave, recallLending, reason);
+    |              ^^^^^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiPropPoolYield.sol:217:14:
+    |
+217 |         emit YieldRecalled(0, 0, "emergency");
+    |              ^^^^^^^^^^^^^
+---
+
+## WikiRevenueDashboard.sol
+TypeError: Function returns 10 values, but returns clause has 7 variables.
+   --> WikiRevenueDashboard.sol:163:53:
+    |
+163 |             try IWikiOpsVault(opsVault).dashboard() returns (
+    |                                                     ^ (Relevant source part starts here and spans across multiple lines).
+---
+
+## WikiRevenueShareNFT.sol
+DeclarationError: Undeclared identifier.
+  --> WikiRevenueShareNFT.sol:86:18:
+   |
+86 |             emit Minted(msg.sender, id);
+   |                  ^^^^^^
+---
+
+## WikiRevenueSplitter.sol
+DeclarationError: Identifier not found or not unique.
+  --> WikiRevenueSplitter.sol:75:5:
+   |
+75 |     IWikiStaking   public staking;
+   |     ^^^^^^^^^^^^
+---
+
+## WikiSmartAccount.sol
+TypeError: This expression is not callable.
+   --> WikiSmartAccount.sol:239:31:
+    |
+239 |         require(msg.sender == owner() || msg.sender == factory, "SA: not authorised");
+    |                               ^^^^^^^
+---
+
+## WikiSmartAccountFactory.sol
+DeclarationError: Undeclared identifier.
+  --> WikiSmartAccountFactory.sol:16:14:
+   |
+16 |         emit AccountCreated(address(account), owner, salt);
+   |              ^^^^^^^^^^^^^^
+---
+
+## WikiSpotRouter.sol
+DeclarationError: Undeclared identifier.
+   --> WikiSpotRouter.sol:312:40:
+    |
+312 |                     amountOutMinimum:  minEthOut > 0 ? minEthOut * 95 / 100 : 1,  // We handle slippage via minAmountOut
+    |                                        ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiSpotRouter.sol:312:56:
+    |
+312 |                     amountOutMinimum:  minEthOut > 0 ? minEthOut * 95 / 100 : 1,  // We handle slippage via minAmountOut
+    |                                                        ^^^^^^^^^
+---
+
+## WikiTrailingStop.sol
+DeclarationError: Undeclared identifier. Did you mean "keepers"?
+   --> WikiTrailingStop.sol:299:31:
+    |
+299 |         require(msg.sender == keeper || msg.sender == owner(), "TS: not keeper");
+    |                               ^^^^^^
+---
+DeclarationError: Undeclared identifier. Did you mean "orderIds"?
+   --> WikiTrailingStop.sol:303:29:
+    |
+303 |             bool isLong  = !orders[oid].isBuy; // sell stop for longs
+    |                             ^^^^^^
+---
+DeclarationError: Undeclared identifier. Did you mean "orderIds"?
+   --> WikiTrailingStop.sol:307:17:
+    |
+307 |                 orders[oid].price = newPrices[i] * (10000 - offset) / 10000;
+    |                 ^^^^^^
+---
+DeclarationError: Undeclared identifier. Did you mean "orderIds"?
+   --> WikiTrailingStop.sol:311:17:
+    |
+311 |                 orders[oid].price = newPrices[i] * (10000 + offset) / 10000;
+    |                 ^^^^^^
+---
+
+## WikiVirtualAMM.sol
+TypeError: Member "length" not found or not visible after argument-dependent lookup in mapping(bytes32 => struct WikiVirtualAMM.Market storage ref).
+   --> WikiVirtualAMM.sol:521:29:
+    |
+521 |         require(marketIdx < markets.length, "vAMM: bad market");
+    |                             ^^^^^^^^^^^^^^
+---
+
+## WikiYieldAggregator.sol
+DeclarationError: Undeclared identifier.
+   --> WikiYieldAggregator.sol:168:13:
+    |
+168 |         try IYieldVault(s.vault).currentAPYBps() returns (uint256 apy) { return apy; }
+    |             ^^^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiYieldAggregator.sol:174:13:
+    |
+174 |         try IYieldVault(s.vault).currentAPYBps() returns (uint256 apy) {
+    |             ^^^^^^^^^^^
+---
+
+## WikiYieldSlice.sol
+DeclarationError: Identifier not found or not unique.
+   --> WikiYieldSlice.sol:114:48:
+    |
+114 |     function setTimelock(address _tl) external onlyOwner {
+    |                                                ^^^^^^^^^
+---
+
+## WikiZap.sol
+DeclarationError: Undeclared identifier.
+  --> WikiZap.sol:99:14:
+   |
+99 |         emit Zapped(msg.sender, address(0), msg.value, poolId, lpReceived, fee);
+   |              ^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiZap.sol:131:36:
+    |
+131 |                 amountOutMinimum:  minEthOut > 0 ? minEthOut * 95 / 100 : 1,
+    |                                    ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiZap.sol:131:52:
+    |
+131 |                 amountOutMinimum:  minEthOut > 0 ? minEthOut * 95 / 100 : 1,
+    |                                                    ^^^^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiZap.sol:148:14:
+    |
+148 |         emit Zapped(msg.sender, p.tokenIn, p.amountIn, p.poolId, lpReceived, fee);
+    |              ^^^^^^
+---
+DeclarationError: Undeclared identifier.
+   --> WikiZap.sol:180:14:
+    |
+180 |         emit ZappedToVault(msg.sender, tokenIn, amountIn, shares, fee);
+    |              ^^^^^^^^^^^^^
+---
+
+SUMMARY: total_files=132, failing_files=39, total_errors=74

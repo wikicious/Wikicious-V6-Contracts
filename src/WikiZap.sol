@@ -76,7 +76,10 @@ contract WikiZap is Ownable2Step, ReentrancyGuard, Pausable {
         uint256 deadline;
     }
 
-    constructor(address _spot, address _treasury, address _owner) Ownable(_owner) {
+        event Zapped(address indexed user, address tokenIn, uint256 amountIn, uint256 poolId, uint256 amountOut, uint256 fee);
+    event ZappedToVault(address indexed user, address tokenIn, uint256 amountIn, uint256 shares, uint256 fee);
+
+constructor(address _spot, address _treasury, address _owner) Ownable(_owner) {
         require(_spot != address(0), "Wiki: zero _spot");
         require(_treasury != address(0), "Wiki: zero _treasury");
         require(_owner != address(0), "Wiki: zero _owner");

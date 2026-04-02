@@ -183,7 +183,7 @@ contract WikiTWAMM is Ownable2Step, ReentrancyGuard {
 
         // Execute swap
         uint256 minOut = o.minPricePerUnit > 0 ? netSlice * o.minPricePerUnit / 1e18 : 0;
-        IERC20(o.tokenIn).safeApprove(address(spotRouter), netSlice);
+        IERC20(o.tokenIn).forceApprove(address(spotRouter), netSlice);
         try spotRouter.swapExactIn(o.poolId, o.tokenIn, netSlice, minOut, o.owner, block.timestamp + 60) returns (uint256 out) {
             amountOut = out;
         } catch {

@@ -4,6 +4,12 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+
+interface IEigenLayerStrategyManager {
+    function depositIntoStrategy(address strategy, address token, uint256 amount) external returns (uint256);
+}
+
 /**
  * @title WikiLiquidRestaking — EigenLayer Liquid Restaking Module
  *
@@ -68,6 +74,8 @@ contract WikiLiquidRestaking is ERC20, Ownable2Step, ReentrancyGuard {
     uint256 public accRewardPerShare;   // scaled 1e18
     uint256 public lastRewardUpdate;
     
+    event Deposited(address indexed user, address indexed token, uint256 amount, uint256 wLRTMinted);
+    event Withdrawn(address indexed user, address indexed token, uint256 tokenAmount, uint256 burnedShares);
     event RewardsHarvested(uint256 total, uint256 toUsers, uint256 toProtocol);
     event Restaked(uint256 amount, address strategy);
 

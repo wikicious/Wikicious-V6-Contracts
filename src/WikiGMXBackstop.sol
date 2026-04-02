@@ -175,7 +175,7 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
     event MinRouteSizeUpdated(uint256 newSize);
 
     constructor(address _vault, address _oracle, address _feeRecipient, address owner)
-        Ownable2Step()
+        Ownable(owner)
     {
         require(_vault != address(0), "Wiki: zero _vault");
         require(_oracle != address(0), "Wiki: zero _oracle");

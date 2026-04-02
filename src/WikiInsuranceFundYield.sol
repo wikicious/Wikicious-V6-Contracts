@@ -6,6 +6,12 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+
+
+interface IWikiFeeDistributor {
+    function receiveInsuranceYield(uint256 amount) external;
+}
+
 /**
  * @title WikiInsuranceFundYield
  * @notice Deploys idle WikiVault insurance fund USDC into WikiLending to earn
@@ -70,6 +76,7 @@ contract WikiInsuranceFundYield is Ownable2Step, ReentrancyGuard {
     // ── Events ─────────────────────────────────────────────────────────────
     
     event YieldHarvested(uint256 yieldAmount, uint256 timestamp);
+    event Deployed(uint256 amount, uint256 wTokens);
     event EmergencyRecall(uint256 usdcRecovered);
 
     // ── Constructor ────────────────────────────────────────────────────────

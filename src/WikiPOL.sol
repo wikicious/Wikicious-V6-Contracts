@@ -91,6 +91,8 @@ contract WikiPOL is Ownable2Step, ReentrancyGuard {
 
     // ── Events ─────────────────────────────────────────────────────────────
     
+    event LiquidityAdded(uint256 usdcAmount, uint256 wikAmount, uint256 lpReceived);
+    event LiquidityRemoved(uint256 usdcOut, uint256 wikOut, uint256 lpBurned);
     event FeesCompounded(uint256 usdc, uint256 wik, uint256 newLP);
     event FundingReceived(uint256 usdc);
 

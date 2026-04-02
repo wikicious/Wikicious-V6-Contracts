@@ -99,7 +99,7 @@ contract WikiIndexBasket is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
     IIdleYieldRouter public idleYieldRouter;
 
     function setIdleYieldRouter(address router) external onlyOwner {
-        idleYieldRouter = router;
+        idleYieldRouter = IIdleYieldRouter(router);
     }
 
     /// @notice Keeper calls this to deploy idle USDC to yield strategies
@@ -286,7 +286,7 @@ contract WikiIndexBasket is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
 
     function _sendFee(uint256 amount) internal {
         if (amount == 0) return;
-        USDC.safeApprove(address(splitter), amount);
+        USDC.forceApprove(address(splitter), amount);
         try splitter.receiveFees(amount) {} catch {}
     }
 

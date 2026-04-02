@@ -67,7 +67,10 @@ contract AaveV3Adapter is IExternalLender, Ownable2Step, ReentrancyGuard{
     uint256 public constant RAY = 1e27;
     
 
-    constructor(address _aggregator, address _owner) Ownable(_owner) {
+        event Supplied(uint256 amount, uint256 aTokenBalance);
+    event Withdrawn(uint256 amount);
+
+constructor(address _aggregator, address _owner) Ownable(_owner) {
         aggregator = _aggregator;
     }
 

@@ -149,14 +149,13 @@ contract WikiOptionsVault is Ownable2Step, ReentrancyGuard, Pausable {
     IIdleYieldRouter public idleYieldRouter;
 
     function setIdleYieldRouter(address router) external onlyOwner {
-        idleYieldRouter = router;
+        idleYieldRouter = IIdleYieldRouter(router);
     }
 
     /// @notice Keeper calls this to deploy idle USDC to yield strategies
     function deployIdle(uint256 amount) external {
         require(msg.sender == owner() || msg.sender == address(idleYieldRouter), "Not authorized");
         require(address(idleYieldRouter) != address(0), "Router not set");
-        USDC.approve(address(idleYieldRouter), amount);
         idleYieldRouter.depositIdle(amount);
     }
 

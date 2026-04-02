@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.24;
+pragma solidity ^0.8.24;
 
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -81,6 +81,8 @@ contract WikiPropPoolYield is ReentrancyGuard, Ownable2Step {
     uint256 public totalYieldGenerated;
     uint256 public lastDeployTime;
     
+    event YieldDeployed(uint256 toAave, uint256 toLending, uint256 at);
+    event YieldRecalled(uint256 fromAave, uint256 fromLending, string reason);
     event YieldHarvested(uint256 amount, uint256 timestamp);
     event KeeperSet(address keeper);
 
