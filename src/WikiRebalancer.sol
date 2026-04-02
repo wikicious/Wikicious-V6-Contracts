@@ -341,7 +341,7 @@ contract WikiRebalancer is Ownable2Step, ReentrancyGuard, Pausable {
             IERC20(v.depositToken).safeTransfer(msg.sender, tip);
         }
 
-        emit Rebalanced(vaultId, msg.sender, drift, tip);
+        emit Rebalanced(vaultId, msg.sender, currentDrift, tip);
     }
 
     // ─────────────────────────────────────────────────────────────────────

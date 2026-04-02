@@ -106,12 +106,13 @@ contract PrincipalToken is ERC20 {
     address public timelock;
     modifier onlyTimelocked() {
         require(
-            msg.sender == owner() && (timelock == address(0) || msg.sender == timelock),
+            msg.sender == slicer && (timelock == address(0) || msg.sender == timelock),
             "Wiki: must go through timelock"
         );
         _;
     }
-    function setTimelock(address _tl) external onlyOwner {
+    function setTimelock(address _tl) external {
+        require(msg.sender == slicer, "PT: not slicer");
         require(_tl != address(0), "Wiki: zero timelock");
         timelock = _tl;
     }

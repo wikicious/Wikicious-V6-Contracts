@@ -545,7 +545,7 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
         bool    isBuy,
         uint256 size,
         uint256 trailBps
-    ) external nonReentrant whenNotPaused returns (uint256 orderId) {
+    ) external nonReentrant returns (uint256 orderId) {
         require(trailBps >= 10 && trailBps <= 5000, "OB: trail 0.1%-50%");
         require(size > 0, "OB: zero size");
 

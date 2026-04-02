@@ -377,10 +377,10 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
 
         netMarginReq = totalMargin > hedgeDiscount ? totalMargin - hedgeDiscount : 0;
         netEquity    = int256(totalMargin) + totalPnL;
-        healthFactor = netMarginReq > 0
+        crossHealthFactor = netMarginReq > 0
             ? uint256(netEquity) * BPS / netMarginReq
             : type(uint256).max;
-        isLiquidatable = healthFactor < MIN_HEALTH_CROSS;
+        liquidatable = crossHealthFactor < MIN_HEALTH_CROSS;
     }
 
     /**

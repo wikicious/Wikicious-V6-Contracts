@@ -122,7 +122,7 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
     // ── Arbitrum Mainnet GMX V5 Addresses ─────────────────────
     address public constant GMX_EXCHANGE_ROUTER = 0x7C68C7866A64FA2160F78EEaE12217FFbf871fa8;
     address public constant GMX_DATASTORE       = 0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8;
-    address public constant GMX_READER          = 0x0537C767cDAA5C3BE5547F4De6b6B5B4c7cE3b8;
+    address public constant GMX_READER          = 0x00537C767cDAA5C3BE5547F4De6b6B5B4c7cE3b8;
     /// GMX V5 OrderHandler on Arbitrum — source of afterOrderExecution callbacks
     address public constant GMX_ORDER_HANDLER = 0x352f684ab9e97a6321a13CF03A61316B681D9fD2;
     address public constant GMX_ROUTER          = 0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6;
@@ -182,7 +182,7 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
         require(_feeRecipient != address(0), "Wiki: zero _feeRecipient");
         _transferOwnership(owner);
         vault          = WikiVault(_vault);
-        oracle         = WikiOracle(_oracle);
+        oracle         = WikiOracle(payable(_oracle));
         USDC           = IERC20(USDC_ADDR);
         wikFeeRecipient = _feeRecipient;
 
