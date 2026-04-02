@@ -80,6 +80,13 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
         uint256[] positionIds;       // WikiPerp position IDs in this account
     }
 
+    struct CrossMarginAccount {
+        int256  netDelta;
+        uint256 totalMarginPosted;
+        uint256 effectiveMargin;
+        bool    crossEnabled;
+    }
+
     // ──────────────────────────────────────────────────────────────────
     //  Storage
     // ──────────────────────────────────────────────────────────────────
@@ -87,6 +94,8 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
 
     mapping(address => PMAccount)   public accounts;
     mapping(address => bool)        public allowedContracts; // WikiPerp etc.
+    mapping(address => bool)        public keepers;
+    mapping(address => CrossMarginAccount) public crossAccounts;
 
     uint256 public totalRevenue;
     uint256 public totalFeeCollected;
@@ -350,10 +359,10 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
      *         Called by liquidation engine instead of per-position check.
      */
     function crossMarginHealth(address trader) external view returns (
-        uint256 healthFactor,   // BPS — below 1000 = liquidatable
+        uint256 crossHealthFactor, // BPS — below 1000 = liquidatable
         int256  netEquity,      // total collateral + all unrealised PnL
         uint256 netMarginReq,   // aggregate margin requirement after netting
-        bool    isLiquidatable
+        bool    liquidatable
     ) {
         CrossPosition[] memory positions = crossPositions[trader];
         if (positions.length == 0) return (type(uint256).max, 0, 0, false);
@@ -377,10 +386,10 @@ contract WikiPortfolioMargin is Ownable2Step, ReentrancyGuard, Pausable {
 
         netMarginReq = totalMargin > hedgeDiscount ? totalMargin - hedgeDiscount : 0;
         netEquity    = int256(totalMargin) + totalPnL;
-        healthFactor = netMarginReq > 0
+        crossHealthFactor = netMarginReq > 0
             ? uint256(netEquity) * BPS / netMarginReq
             : type(uint256).max;
-        isLiquidatable = healthFactor < MIN_HEALTH_CROSS;
+        liquidatable = crossHealthFactor < MIN_HEALTH_CROSS;
     }
 
     /**

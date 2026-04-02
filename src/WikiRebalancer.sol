@@ -262,8 +262,8 @@ contract WikiRebalancer is Ownable2Step, ReentrancyGuard, Pausable {
 
         _chargeMgmtFee(vaultId);
 
-        uint256 sharePrice = _sharePrice(vaultId);
-        uint256 shares     = amount * PRECISION / sharePrice;
+        uint256 currentSharePrice = _sharePrice(vaultId);
+        uint256 shares            = amount * PRECISION / currentSharePrice;
         require(shares > 0, "RB: zero shares");
 
         // [A2] State before transfer
@@ -290,8 +290,8 @@ contract WikiRebalancer is Ownable2Step, ReentrancyGuard, Pausable {
         _chargeMgmtFee(vaultId);
         _chargePerformanceFee(vaultId);
 
-        uint256 sharePrice = _sharePrice(vaultId);
-        uint256 usdcOut    = shares * sharePrice / PRECISION;
+        uint256 currentSharePrice = _sharePrice(vaultId);
+        uint256 usdcOut           = shares * currentSharePrice / PRECISION;
         uint256 available  = vaultBalances[vaultId][v.depositToken];
         if (usdcOut > available) usdcOut = available; // cap at available
 
@@ -325,8 +325,8 @@ contract WikiRebalancer is Ownable2Step, ReentrancyGuard, Pausable {
             "RB: cooldown"
         ); // [A4]
 
-        uint256 drift = _computeDrift(vaultId);
-        require(drift >= s.driftThresholdBps, "RB: below threshold");
+        uint256 currentDrift = _computeDrift(vaultId);
+        require(currentDrift >= s.driftThresholdBps, "RB: below threshold");
 
         uint256 aum    = vaultBalances[vaultId][v.depositToken];
         uint256 tip    = aum * s.keeperTipBps / BPS;
@@ -341,7 +341,7 @@ contract WikiRebalancer is Ownable2Step, ReentrancyGuard, Pausable {
             IERC20(v.depositToken).safeTransfer(msg.sender, tip);
         }
 
-        emit Rebalanced(vaultId, msg.sender, drift, tip);
+        emit Rebalanced(vaultId, msg.sender, currentDrift, tip);
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -417,10 +417,10 @@ contract WikiRebalancer is Ownable2Step, ReentrancyGuard, Pausable {
                 value = bal * p / PRECISION;
             } catch {}
             uint256 actualBps = value * BPS / totalUSD;
-            uint256 drift     = actualBps > alloc.targetBps
+            uint256 driftBps  = actualBps > alloc.targetBps
                 ? actualBps - alloc.targetBps
                 : alloc.targetBps - actualBps;
-            if (drift > maxDrift) maxDrift = drift;
+            if (driftBps > maxDrift) maxDrift = driftBps;
         }
     }
 

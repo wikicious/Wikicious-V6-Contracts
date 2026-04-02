@@ -300,8 +300,8 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
                 }
 
                 if (!maker.active || maker.baseRemaining == 0) {
-                    uint256 tmp = nextOrder[makerOrderId];
-                    makerOrderId = tmp;
+                    uint256 nextMakerOrderId = nextOrder[makerOrderId];
+                    makerOrderId = nextMakerOrderId;
                     continue;
                 }
 
@@ -342,8 +342,8 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
 
                 emit OrderFilled(makerOrderId, takerOrderId, taker.maker, fillBase, fillQuote, takerFee);
 
-                uint256 tmp = nextOrder[makerOrderId];
-                if (maker.baseRemaining == 0) makerOrderId = tmp;
+                uint256 nextMaker = nextOrder[makerOrderId];
+                if (maker.baseRemaining == 0) makerOrderId = nextMaker;
                 else break;
             }
 
@@ -518,112 +518,4 @@ contract WikiOrderBook is Ownable2Step, ReentrancyGuard {
         if (bestBid == 0 || bestAsk == 0) return 0;
         mid = (bestBid + bestAsk) / 2;
     }
-    // ── TRAILING STOP ──────────────────────────────────────────────────────
-    /**
-     * @notice Place a trailing stop order.
-     * @param pairId    Trading pair ID
-     * @param isBuy     True for trailing stop buy (short cover), false for trailing stop sell (long protect)
-     * @param size      Position size in quote (USDC)
-     * @param trailBps  Trail distance in basis points (e.g. 200 = 2% trail)
-     *
-     * How it works:
-     *   For a SELL trailing stop (protecting a long):
-     *     - Records current price as highWater
-     *     - As price rises, highWater rises with it
-     *     - Trigger = highWater × (1 - trailBps/10000)
-     *     - When price falls to trigger → execute MARKET SELL
-     *     - Locks in profits without capping upside
-     *
-     *   For a BUY trailing stop (covering a short):
-     *     - Records current price as lowWater
-     *     - As price falls, lowWater falls with it
-     *     - Trigger = lowWater × (1 + trailBps/10000)
-     *     - When price rises to trigger → execute MARKET BUY
-     */
-    function placeTrailingStop(
-        bytes32 pairId,
-        bool    isBuy,
-        uint256 size,
-        uint256 trailBps
-    ) external nonReentrant whenNotPaused returns (uint256 orderId) {
-        require(trailBps >= 10 && trailBps <= 5000, "OB: trail 0.1%-50%");
-        require(size > 0, "OB: zero size");
-
-        uint256 currentPrice = _getPrice(pairId);
-        require(currentPrice > 0, "OB: no price");
-
-        orderId = _nextOrderId++;
-        uint256 triggerPrice = isBuy
-            ? currentPrice * (BPS + trailBps) / BPS   // buy trigger = lowWater × (1 + trail)
-            : currentPrice * (BPS - trailBps) / BPS;  // sell trigger = highWater × (1 - trail)
-
-        orders[orderId] = Order({
-            orderId:         orderId,
-            pairId:          pairId,
-            trader:          msg.sender,
-            orderType:       OrderType.TRAILING_STOP,
-            isBuy:           isBuy,
-            price:           triggerPrice,
-            size:            size,
-            filled:          0,
-            status:          OrderStatus.OPEN,
-            createdAt:       block.timestamp,
-            isTrailing:      true,
-            trailBps:        trailBps,
-            trailHighWater:  currentPrice,
-            trailTriggerPrice: triggerPrice,
-            ocoLinkedOrderId: 0
-        });
-
-        traderOrders[msg.sender].push(orderId);
-        emit TrailingStopPlaced(msg.sender, orderId, pairId, isBuy, currentPrice, trailBps, triggerPrice);
-    }
-
-    /**
-     * @notice Keeper calls this to update trailing high-water marks.
-     *         Called every time a price update arrives.
-     *         Gas efficient — only updates orders where price has moved favourably.
-     */
-    function updateTrailingStops(bytes32 pairId, uint256 currentPrice) external {
-        require(keepers[msg.sender] || msg.sender == owner(), "OB: not keeper");
-
-        uint256[] storage pairOrderIds = pairOrders[pairId];
-        for (uint256 i; i < pairOrderIds.length; i++) {
-            Order storage o = orders[pairOrderIds[i]];
-            if (!o.isTrailing || o.status != OrderStatus.OPEN) continue;
-
-            bool updated = false;
-            if (!o.isBuy && currentPrice > o.trailHighWater) {
-                // Long protection: price rose → raise high water mark
-                o.trailHighWater     = currentPrice;
-                o.trailTriggerPrice  = currentPrice * (BPS - o.trailBps) / BPS;
-                o.price              = o.trailTriggerPrice;
-                updated = true;
-            } else if (o.isBuy && currentPrice < o.trailHighWater) {
-                // Short cover: price fell → lower low water mark
-                o.trailHighWater     = currentPrice;
-                o.trailTriggerPrice  = currentPrice * (BPS + o.trailBps) / BPS;
-                o.price              = o.trailTriggerPrice;
-                updated = true;
-            }
-
-            if (updated) {
-                emit TrailingStopUpdated(o.orderId, o.trailHighWater, o.trailTriggerPrice);
-            }
-
-            // Check if triggered
-            bool triggered = (!o.isBuy && currentPrice <= o.trailTriggerPrice) ||
-                             (o.isBuy  && currentPrice >= o.trailTriggerPrice);
-            if (triggered) {
-                o.status = OrderStatus.FILLED;
-                emit TrailingStopTriggered(o.orderId, o.trader, o.pairId, currentPrice, o.size);
-            }
-        }
-    }
-
-    event TrailingStopPlaced(address indexed trader, uint256 indexed orderId, bytes32 pairId, bool isBuy, uint256 price, uint256 trailBps, uint256 triggerPrice);
-    event TrailingStopUpdated(uint256 indexed orderId, uint256 newHighWater, uint256 newTrigger);
-    event TrailingStopTriggered(uint256 indexed orderId, address indexed trader, bytes32 pairId, uint256 executionPrice, uint256 size);
-
-
 }
