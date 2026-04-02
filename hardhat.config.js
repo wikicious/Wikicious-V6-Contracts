@@ -1,6 +1,19 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
+// Optional per-project proxy override for hardhat compiler downloads.
+// Use these when global proxy env vars are not picked up by your runtime:
+//   HARDHAT_HTTPS_PROXY, HARDHAT_HTTP_PROXY, HARDHAT_NO_PROXY
+if (process.env.HARDHAT_HTTPS_PROXY && !process.env.HTTPS_PROXY) {
+  process.env.HTTPS_PROXY = process.env.HARDHAT_HTTPS_PROXY;
+}
+if (process.env.HARDHAT_HTTP_PROXY && !process.env.HTTP_PROXY) {
+  process.env.HTTP_PROXY = process.env.HARDHAT_HTTP_PROXY;
+}
+if (process.env.HARDHAT_NO_PROXY && !process.env.NO_PROXY) {
+  process.env.NO_PROXY = process.env.HARDHAT_NO_PROXY;
+}
+
 
 // ─── REQUIRED ENV VARS ────────────────────────────────────────────────────────
 // Copy .env.example to .env and fill in before running any hardhat command.
