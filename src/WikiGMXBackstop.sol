@@ -123,7 +123,7 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
     // ── Arbitrum Mainnet GMX V5 Addresses ─────────────────────
     address public constant GMX_EXCHANGE_ROUTER = 0x7C68C7866A64FA2160F78EEaE12217FFbf871fa8;
     address public constant GMX_DATASTORE       = 0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8;
-    address public constant GMX_READER = 0x00537C767cDAA5C3bE5547F4DE6B6B5b4c7Ce3b8;
+address public constant GMX_READER = 0x00537C767cDAA5C3bE5547F4DE6B6B5b4c7Ce3b8;
     /// GMX V5 OrderHandler on Arbitrum — source of afterOrderExecution callbacks
     address public constant GMX_ORDER_HANDLER = 0x352f684ab9e97a6321a13CF03A61316B681D9fD2;
     address public constant GMX_ROUTER          = 0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6;

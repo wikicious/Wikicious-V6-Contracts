@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 
 interface IWikiOpsVault { function totalValue() external view returns (uint256); }
+interface IWikiBackstop { function totalAssets() external view returns (uint256); }
+interface IWikiInsurance { function balance() external view returns (uint256); }
+interface IWikiVault { function totalDeposits() external view returns (uint256); }
 
 /**
  * @title WikiProofOfSolvency
