@@ -138,13 +138,13 @@ contract WikiDeltaNeutralVault is ERC20, Ownable2Step, ReentrancyGuard, Pausable
         uint256 toHedge   = amount - toLending;
 
         if (address(lending) != address(0) && toLending > 0) {
-            USDC.safeApprove(address(lending), toLending);
+            USDC.forceApprove(address(lending), toLending);
             try lending.supply(lendingMarketId, toLending) {} catch {}
         }
 
         // Open or add to short hedge position
         if (address(perp) != address(0) && toHedge > 0 && activeHedgePositionId == 0) {
-            USDC.safeApprove(address(perp), toHedge);
+            USDC.forceApprove(address(perp), toHedge);
             try perp.openPosition(hedgeMarketId, false, toHedge, 1) returns (uint256 pid) {
                 activeHedgePositionId = pid;
             } catch {}
@@ -222,7 +222,7 @@ contract WikiDeltaNeutralVault is ERC20, Ownable2Step, ReentrancyGuard, Pausable
         uint256 vaultUSDC = totalValue();
         uint256 toHedge   = vaultUSDC * (BPS - hedgeRatioBps) / BPS;
         if (toHedge > 0 && address(perp) != address(0)) {
-            USDC.safeApprove(address(perp), toHedge);
+            USDC.forceApprove(address(perp), toHedge);
             try perp.openPosition(hedgeMarketId, false, toHedge, 1) returns (uint256 pid) {
                 activeHedgePositionId = pid;
             } catch {}

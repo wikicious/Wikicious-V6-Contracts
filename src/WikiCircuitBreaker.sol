@@ -87,7 +87,7 @@ contract WikiCircuitBreaker is Ownable2Step, ReentrancyGuard {
     }
     
     function isMarketHalted(bytes32 marketId) external view returns (bool) {
-        return marketHalted[marketId] || tripped;
+        return marketHalted[marketId] || isTripped;
     }
     mapping(address => bool) public resetters; // can reset after cooldown
 

@@ -124,7 +124,7 @@ contract WikiSpotRouter is Ownable2Step, ReentrancyGuard {
     event SpreadUpdated(uint256 newBps);
     event FeeWithdrawn(address token, uint256 amount);
 
-    constructor(address owner, address _feeRecipient) Ownable2Step() {
+    constructor(address owner, address _feeRecipient) Ownable(owner) {
         require(owner != address(0), "Wiki: zero owner");
         require(_feeRecipient != address(0), "Wiki: zero _feeRecipient");
         _transferOwnership(owner);
@@ -193,7 +193,7 @@ contract WikiSpotRouter is Ownable2Step, ReentrancyGuard {
 
         // Pull max input (we'll refund unused)
         IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), maxAmountIn);
-        IERC20(tokenIn).safeApprove(UNISWAP_ROUTER, maxAmountIn);
+        IERC20(tokenIn).forceApprove(UNISWAP_ROUTER, maxAmountIn);
 
         // Tell Uniswap we need grossOut
         amountIn = _executeSwapExactOut(tokenIn, tokenOut, grossOut, maxAmountIn, cfg);
@@ -298,7 +298,7 @@ contract WikiSpotRouter is Ownable2Step, ReentrancyGuard {
     function _executeSwap(
         address tokenIn, address tokenOut, uint256 amountIn, PoolConfig memory cfg
     ) internal returns (uint256 amountOut) {
-        IERC20(tokenIn).safeApprove(UNISWAP_ROUTER, amountIn);
+        IERC20(tokenIn).forceApprove(UNISWAP_ROUTER, amountIn);
 
         if (cfg.hopToken == address(0)) {
             // Direct single-hop swap

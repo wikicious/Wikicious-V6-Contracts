@@ -33,7 +33,7 @@ contract sWIKToken is ERC20, Ownable2Step {
 
     address public minter;
 
-    constructor(address owner) ERC20("Staked WIK", "sWIK") Ownable2Step() {
+    constructor(address owner) ERC20("Staked WIK", "sWIK") Ownable(owner) {
         require(owner != address(0), "Wiki: zero owner");
         _transferOwnership(owner);
     }
