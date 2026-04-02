@@ -52,6 +52,11 @@ interface IWikiLiquidator {
     function isLiquidatable(uint256 posId) external view returns (bool, uint256, uint256);
 }
 
+interface IIdleYieldRouter {
+    function depositIdle(uint256 amount) external;
+    function recall(uint256 amount, string calldata reason) external;
+}
+
 
 contract WikiLiquidationInsurance is Ownable2Step, ReentrancyGuard, Pausable {
     // ── Timelock guard ────────────────────────────────────────────────────

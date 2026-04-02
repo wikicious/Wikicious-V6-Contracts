@@ -452,8 +452,8 @@ contract WikiLPCollateral is Ownable2Step, ReentrancyGuard, Pausable {
 
         } else if (ct.method == ValuationMethod.WikiSpot) {
             // WikiSpot: fair LP price = 2 × √(reserveA_USD × reserveB_USD) / totalLP
-            (,, uint256 resA, uint256 resB, uint256 totalLP,,,,) = IWikiSpot(ct.pool).pools(ct.poolId);
-            if (totalLP == 0) return 0;
+            (,, uint256 resA, uint256 resB, uint256 poolTotalLP,,,,) = IWikiSpot(ct.pool).pools(ct.poolId);
+            if (poolTotalLP == 0) return 0;
 
             (uint256 priceA,) = oracle.getPriceView(ct.tokenAOracleId);
             (uint256 priceB,) = oracle.getPriceView(ct.tokenBOracleId);
@@ -465,7 +465,7 @@ contract WikiLPCollateral is Ownable2Step, ReentrancyGuard, Pausable {
             // Fair price: 2 × √(k) / totalLP  where k = valueA × valueB
             uint256 k       = valueA * valueB;
             uint256 sqrtK   = _sqrt(k);
-            uint256 fairUSD = 2 * sqrtK * lpAmount / totalLP; // 1e18
+            uint256 fairUSD = 2 * sqrtK * lpAmount / poolTotalLP; // 1e18
 
             return fairUSD / 1e12; // → 6 dec (USDC)
 
