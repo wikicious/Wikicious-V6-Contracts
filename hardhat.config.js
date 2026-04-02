@@ -1,26 +1,12 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
-const { subtask } = require('hardhat/config');
-const { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } = require('hardhat/builtin-tasks/task-names');
-
-subtask(TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD, async (args, hre, runSuper) => {
-  if (args.solcVersion === '0.8.24') {
-    const compilerPath = require.resolve('solc/soljson.js');
-    return {
-      compilerPath,
-      isSolcJs: true,
-      version: '0.8.24',
-      longVersion: '0.8.24+local',
-    };
-  }
-
-  return runSuper();
-});
 
 
 // ─── REQUIRED ENV VARS ────────────────────────────────────────────────────────
 // Copy .env.example to .env and fill in before running any hardhat command.
 // For CI/CD: set these as GitHub Actions secrets (see .github/workflows/).
+// If your environment requires an outbound proxy for compiler downloads,
+// set HTTPS_PROXY/HTTP_PROXY before running hardhat compile.
 const DEPLOYER_KEY      = process.env.DEPLOYER_PRIVATE_KEY || '0'.repeat(64);
 const ALCHEMY_ARBITRUM  = process.env.ALCHEMY_ARBITRUM_URL;
 const ALCHEMY_SEPOLIA   = process.env.ALCHEMY_SEPOLIA_URL;
@@ -34,7 +20,7 @@ if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
 
 module.exports = {
   solidity: {
-    version: '0.8.24',
+    version: '0.8.26',
     settings: {
       optimizer: { enabled: true, runs: 200 },
       viaIR: true,

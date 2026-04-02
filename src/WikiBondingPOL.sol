@@ -55,7 +55,7 @@ contract WikiBondingPOL is Ownable2Step, ReentrancyGuard {
     mapping(uint256 => BondType)          public bondTypes;
     mapping(uint256 => UserBond)          public userBonds;
     mapping(address => uint256[])         public userBondIds;
-    mapping(uint256 => mapping(address => uint256)) public dailyBondVolume; // bondTypeId → day → userVolume
+    mapping(uint256 => mapping(uint256 => uint256)) public dailyBondVolume; // bondTypeId → day → volume
 
     IWikiOracle public oracle;
     IWIK        public wik;

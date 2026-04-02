@@ -111,19 +111,24 @@ constructor(address _aggregator, address _owner) Ownable(_owner) {
      *   APY_BPS = (liquidityRate / RAY) * seconds_per_year * 10000
      */
     function getAPY() external view override returns (uint256 apyBps) {
-        try AAVE_POOL.getReserveData(USDC) returns (
-            uint256, uint128, uint128 currentLiquidityRate,
-            uint128, uint128, uint128, uint40, uint16,
-            address, address, address, address, uint128, uint128, uint128
-        ) {
-            // currentLiquidityRate is in RAY (1e27) per second
-            // Annual rate = rate * 365 days
-            uint256 ratePerSecond  = uint256(currentLiquidityRate);
-            uint256 ratePerYear    = ratePerSecond * 365 days;
-            apyBps = ratePerYear * 10000 / RAY;
-        } catch {
+        (bool ok, bytes memory data) = address(AAVE_POOL).staticcall(
+            abi.encodeWithSelector(IAaveV3Pool.getReserveData.selector, USDC)
+        );
+
+        if (!ok || data.length < 96) {
             apyBps = 400; // 4% fallback if call fails
+            return apyBps;
         }
+
+        uint256 currentLiquidityRate;
+        assembly {
+            currentLiquidityRate := mload(add(data, 96))
+        }
+
+        // currentLiquidityRate is in RAY (1e27) per second
+        // Annual rate = rate * 365 days
+        uint256 ratePerYear = currentLiquidityRate * 365 days;
+        apyBps = ratePerYear * 10000 / RAY;
     }
 
     /**

@@ -6,6 +6,42 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+interface IWikiDAOTreasury {
+    function claimSalaryFor(address contributor) external returns (uint256 amount);
+    function claimableAmount(address wallet) external view returns (
+        uint256 amount, uint256 periods, uint256 nextClaimAt
+    );
+    function authoriseAgent(address agent, bool enabled) external;
+}
+
+interface IWikiSpotRouter {
+    function swapExactIn(
+        uint256 poolId,
+        address tokenIn,
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountOut);
+}
+
+interface IWikiStaking {
+    struct Lock { uint256 amount; uint256 unlockTime; uint256 veWIK; }
+    function lock(uint256 amount, uint256 duration) external;
+    function claimFees() external;
+    function pendingFeesView(address user) external view returns (uint256);
+    function getLock(address user) external view returns (Lock memory);
+    function MAX_LOCK() external view returns (uint256);
+    function getCurrentVeWIK(address user) external view returns (uint256);
+}
+
+interface IWikiTokenVesting {
+    function claim() external returns (uint256);
+    function claimableNow(address wallet) external view returns (
+        uint256 totalClaimable, uint256[] memory ids, uint256[] memory amounts
+    );
+}
+
 /**
  * @title WikiAutoCompounder
  * @notice Every WIK token you earn, vest, or receive in fees is automatically
@@ -74,38 +110,8 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  *     Net effect: your share GROWS, not shrinks
  *
  * ─── SECURITY ─────────────────────────────────────────────────────────────────
- * [A1] No custody — interface IWikiDAOTreasury {
-        function claimSalaryFor(address contributor) external returns (uint256 amount);
-        function claimableAmount(address wallet) external view returns (
-            uint256 amount, uint256 periods, uint256 nextClaimAt
-        );
-        function authoriseAgent(address agent, bool enabled) external;
-    }
-
-interface IWikiSpotRouter {
-        function swapExactIn(
-            uint256 poolId, address tokenIn, uint256 amountIn,
-            uint256 amountOutMin, address to, uint256 deadline
-        ) external returns (uint256 amountOut);
-    }
-
-interface IWikiStaking {
-        struct Lock { uint256 amount; uint256 unlockTime; uint256 veWIK; }
-        function lock(uint256 amount, uint256 duration) external;
-        function claimFees() external;
-        function pendingFeesView(address user) external view returns (uint256);
-        function getLock(address user) external view returns (Lock memory);
-        function MAX_LOCK() external view returns (uint256);
-        function getCurrentVeWIK(address user) external view returns (uint256);
-    }
-
-interface IWikiTokenVesting {
-        function claim() external returns (uint256);
-        function claimableNow(address wallet) external view returns (
-            uint256 totalClaimable, uint256[] memory ids, uint256[] memory amounts
-        );
-    }
-}
+ * [A1] No custody — contract never keeps funds beyond one compound transaction
+ */
 
 /**
  * @dev Security properties:
