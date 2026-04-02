@@ -809,9 +809,9 @@ contract WikiYieldSlice is Ownable2Step, ReentrancyGuard, Pausable {
      */
     function _impliedRate(Slice storage s) internal view returns (uint256) {
         if (s.ammPT == 0 || s.ammUnderlying == 0) return 0;
-        uint256 ptPrice   = s.ammUnderlying * PRECISION / (s.ammPT + s.ammUnderlying);
+        uint256 impliedPtPrice = s.ammUnderlying * PRECISION / (s.ammPT + s.ammUnderlying);
         uint256 timeLeft  = s.maturity > block.timestamp ? s.maturity - block.timestamp : 1;
-        uint256 discount  = PRECISION > ptPrice ? PRECISION - ptPrice : 0;
+        uint256 discount  = PRECISION > impliedPtPrice ? PRECISION - impliedPtPrice : 0;
         // Annualise: rate = discount × 365days / timeLeft
         return discount * 365 days / timeLeft;
     }
