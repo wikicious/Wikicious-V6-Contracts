@@ -118,7 +118,7 @@ contract WikiAgenticDAO is Ownable2Step, ReentrancyGuard {
             createdAt: block.timestamp,
             votingEndsAt: block.timestamp + HUMAN_VOTING_PERIOD,
             executableAt: block.timestamp + HUMAN_VOTING_PERIOD + TIMELOCK,
-            status: ProposalStatus.ACTIVE, aiAutoExecute: false
+            status: ProposalStatus.ACTIVE
         });
         emit ProposalCreated(id, ProposalType.HUMAN, msg.sender, title, AITrigger.NONE);
     }

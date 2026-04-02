@@ -11,6 +11,36 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 interface IWikiBackstop {
     function absorbADLShortfall(uint256 amount) external;
+    function cover(uint256 shortfall) external returns (uint256 covered);
+    function availableCover() external view returns (uint256);
+}
+
+interface IWikiVault {
+    function freeMargin(address user) external view returns (uint256);
+    function insuranceFund() external view returns (uint256);
+    function settlePnL(address user, int256 pnl) external;
+    function releaseMargin(address user, uint256 amount) external;
+}
+
+interface IWikiVAMM {
+    struct Position {
+        address trader;
+        bytes32 marketId;
+        bool    isLong;
+        uint256 size;
+        uint256 collateral;
+        uint256 entryPrice;
+        uint256 entryFundingIndex;
+        uint256 leverage;
+        uint256 liquidationPrice;
+        uint256 openedAt;
+    }
+
+    function positions(uint256 posId) external view returns (Position memory);
+    function positionCount() external view returns (uint256);
+    function closePositionADL(uint256 posId, uint256 partialSize, address adlContract) external returns (int256 pnl);
+    function getMarkPrice(bytes32 marketId) external view returns (uint256);
+    function userPositions(address user) external view returns (uint256[] memory);
 }
 
 /**
@@ -59,38 +89,8 @@ interface IWikiBackstop {
  *
  * ─── PROTOCOL LOSS = ZERO ────────────────────────────────────────────────────
  *
- * This interface IWikiBackstop {
-        function cover(uint256 shortfall) external returns (uint256 covered);
-        function availableCover()        external view returns (uint256);
-    }
-
-interface IWikiVault {
-        function freeMargin(address user)   external view returns (uint256);
-        function insuranceFund()            external view returns (uint256);
-        function settlePnL(address user, int256 pnl) external;
-        function releaseMargin(address user, uint256 amount) external;
-    }
-
-interface IWikiVAMM {
-        struct Position {
-            address trader;
-            bytes32 marketId;
-            bool    isLong;
-            uint256 size;
-            uint256 collateral;
-            uint256 entryPrice;
-            uint256 entryFundingIndex;
-            uint256 leverage;
-            uint256 liquidationPrice;
-            uint256 openedAt;
-        }
-        function positions(uint256 posId)  external view returns (Position memory);
-        function positionCount()           external view returns (uint256);
-        function closePositionADL(uint256 posId, uint256 partialSize, address adlContract) external returns (int256 pnl);
-        function getMarkPrice(bytes32 marketId) external view returns (uint256);
-        function userPositions(address user) external view returns (uint256[] memory);
-    }
-}
+ * This keeps protocol insolvency at zero by design.
+ */
 
 /**
  * @dev The ADL engine guarantees: for every dollar of shortfall, exactly one dollar
