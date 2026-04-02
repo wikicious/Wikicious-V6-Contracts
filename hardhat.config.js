@@ -4,13 +4,13 @@ const { subtask } = require('hardhat/config');
 const { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } = require('hardhat/builtin-tasks/task-names');
 
 subtask(TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD, async (args, hre, runSuper) => {
-  if (args.solcVersion === '0.8.24') {
+  if (args.solcVersion === '0.8.26') {
     const compilerPath = require.resolve('solc/soljson.js');
     return {
       compilerPath,
       isSolcJs: true,
-      version: '0.8.24',
-      longVersion: '0.8.24+local',
+      version: '0.8.26',
+      longVersion: '0.8.26+local',
     };
   }
 
@@ -34,10 +34,10 @@ if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
 
 module.exports = {
   solidity: {
-    version: '0.8.24',
+    version: '0.8.26',
     settings: {
-      optimizer: { enabled: true, runs: 200 },
-      viaIR: true,
+      optimizer: { enabled: false, runs: 200 },
+      viaIR: false,
       evmVersion: 'cancun',
     },
   },   
