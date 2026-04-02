@@ -119,6 +119,8 @@ contract WikiGMXBackstop is Ownable2Step, ReentrancyGuard, Pausable {
 
     using SafeERC20 for IERC20;
 
+    address public constant GMX_READER = 0x00537C767cDAA5C3bE5547F4DE6B6B5b4c7Ce3b8;
+
     // ── Arbitrum Mainnet GMX V5 Addresses ─────────────────────
     address public constant GMX_EXCHANGE_ROUTER = 0x7C68C7866A64FA2160F78EEaE12217FFbf871fa8;
     address public constant GMX_DATASTORE       = 0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8;
