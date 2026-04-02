@@ -140,6 +140,8 @@ contract WikiOpsVault is Ownable2Step, ReentrancyGuard, Pausable {
 
     // ── Events ────────────────────────────────────────────────────────────
     
+    event Received(uint256 amount, uint256 cumulativeDeposited);
+    event Rebalanced(uint256 toLending, uint256 toBackstop, uint256 toFunding, uint256 idleAfter);
     event Withdrawn(address indexed to, uint256 amount, uint256 yieldIncluded);
     event StrategyUpdated(address lending, address backstop, address funding);
 

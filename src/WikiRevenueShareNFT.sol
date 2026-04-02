@@ -58,6 +58,7 @@ contract WikiRevenueShareNFT is ERC721, Ownable2Step, ReentrancyGuard {
     string private _baseTokenURI;
 
     
+    event Minted(address indexed to, uint256 indexed tokenId);
     event FeesDeposited(uint256 amount, uint256 newAccPerToken);
     event FeeClaimed(uint256 indexed tokenId, address indexed owner, uint256 amount);
 
