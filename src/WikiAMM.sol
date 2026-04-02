@@ -79,7 +79,7 @@ contract WikiAMM is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
         _transferOwnership(owner);
         USDC   = IERC20(usdc);
         vault  = WikiVault(_vault);
-        oracle = WikiOracle(_oracle);
+        oracle = WikiOracle(payable(_oracle));
     }
 
     // ── LP Actions ────────────────────────────────────────────

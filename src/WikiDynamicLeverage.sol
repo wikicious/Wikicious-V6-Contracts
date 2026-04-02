@@ -360,7 +360,7 @@ contract WikiDynamicLeverage is Ownable2Step, Pausable {
 
         // Emit appropriate tier event
         if (newTierIdx > oldTierIdx) {
-            emit TierIncreased(newTierIdx, newTier.name, newTier.maxLeverage, fund);
+            emit TierAdvanced(newTierIdx, newTier.name, newTier.maxLeverage, newTier.maxPositionUsdc, fund);
         } else if (newTierIdx < oldTierIdx) {
             emit TierReduced(newTierIdx, newTier.name, newTier.maxLeverage, 0);
         }

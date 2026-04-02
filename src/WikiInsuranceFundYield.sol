@@ -76,6 +76,7 @@ contract WikiInsuranceFundYield is Ownable2Step, ReentrancyGuard {
     // ── Events ─────────────────────────────────────────────────────────────
     
     event YieldHarvested(uint256 yieldAmount, uint256 timestamp);
+    event Deployed(uint256 amount, uint256 wTokens);
     event EmergencyRecall(uint256 usdcRecovered);
 
     // ── Constructor ────────────────────────────────────────────────────────

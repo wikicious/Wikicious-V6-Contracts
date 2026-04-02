@@ -409,14 +409,14 @@ contract WikiCopyTrading is Ownable2Step, ReentrancyGuard {
         SocialVault storage sv = socialVaults[vaultId];
         require(msg.sender == sv.leadTrader, "Copy: not lead trader");
         // Mirror proportionally for each follower based on their allocation
-        emit TradeMirrored(vaultId, msg.sender, isLong, notional);
+        emit SocialTradeMirrored(vaultId, msg.sender, isLong, notional);
     }
 
     function exitVault(uint256 vaultId) external {
         require(followingVault[msg.sender] == vaultId, "Copy: not following");
         socialVaults[vaultId].totalFollowers--;
         followingVault[msg.sender] = 0;
-        emit FollowerExited(vaultId, msg.sender, 0);
+        emit SocialFollowerExited(vaultId, msg.sender, 0);
     }
 
 }

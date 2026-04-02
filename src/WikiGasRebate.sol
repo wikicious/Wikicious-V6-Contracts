@@ -49,6 +49,7 @@ contract WikiGasRebate is Ownable2Step, ReentrancyGuard {
     Campaign[] public campaigns;
     mapping(bytes32 => uint256) public refCodeToCampaign;
     mapping(uint256 => mapping(address => uint256)) public userTxCount;
+    mapping(address => uint256) public userRebates;
 
     address public staker;       // WikiStaking address
     uint256 public totalWIKReceived;
@@ -121,7 +122,7 @@ contract WikiGasRebate is Ownable2Step, ReentrancyGuard {
         uint256 amount = userRebates[msg.sender];
         require(amount > 0, "GR: nothing to claim");
         userRebates[msg.sender] = 0;
-        USDC.transfer(msg.sender, amount);
+        payable(msg.sender).transfer(amount);
     }
 
 }
