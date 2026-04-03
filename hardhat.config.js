@@ -1,10 +1,7 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
-
 // Optional per-project proxy override for hardhat compiler downloads.
-// Use these when global proxy env vars are not picked up by your runtime:
-//   HARDHAT_HTTPS_PROXY, HARDHAT_HTTP_PROXY, HARDHAT_NO_PROXY
 if (process.env.HARDHAT_HTTPS_PROXY && !process.env.HTTPS_PROXY) {
   process.env.HTTPS_PROXY = process.env.HARDHAT_HTTPS_PROXY;
 }
@@ -15,18 +12,12 @@ if (process.env.HARDHAT_NO_PROXY && !process.env.NO_PROXY) {
   process.env.NO_PROXY = process.env.HARDHAT_NO_PROXY;
 }
 
-
-// ─── REQUIRED ENV VARS ────────────────────────────────────────────────────────
-// Copy .env.example to .env and fill in before running any hardhat command.
-// For CI/CD: set these as GitHub Actions secrets (see .github/workflows/).
-// If your environment requires an outbound proxy for compiler downloads,
-// set HTTPS_PROXY/HTTP_PROXY before running hardhat compile.
-const DEPLOYER_KEY      = process.env.DEPLOYER_PRIVATE_KEY || '0'.repeat(64);
-const ALCHEMY_ARBITRUM  = process.env.ALCHEMY_ARBITRUM_URL;
-const ALCHEMY_SEPOLIA   = process.env.ALCHEMY_SEPOLIA_URL;
-const TENDERLY_RPC      = process.env.TENDERLY_RPC_URL;
-const ETHERSCAN_KEY     = process.env.ETHERSCAN_API_KEY;
-const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src';
+const DEPLOYER_KEY     = process.env.DEPLOYER_PRIVATE_KEY || '0'.repeat(64);
+const ALCHEMY_ARBITRUM = process.env.ALCHEMY_ARBITRUM_URL;
+const ALCHEMY_SEPOLIA  = process.env.ALCHEMY_SEPOLIA_URL;
+const TENDERLY_RPC     = process.env.TENDERLY_RPC_URL;
+const ETHERSCAN_KEY    = process.env.ETHERSCAN_API_KEY;
+const SOURCE_DIR       = process.env.CONTRACT_SOURCES_DIR || './src';
 
 if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
   throw new Error('ALCHEMY_ARBITRUM_URL is required in .env for mainnet deployment');
@@ -34,55 +25,69 @@ if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
 
 module.exports = {
   solidity: {
-  compilers: [{ version: '0.8.26', settings: { optimizer: {enabled:true,runs:200}, viaIR: true, evmVersion: 'cancun' } }],
-  overrides: {
-    'src/WikiMarketRegistry.sol': { version: '0.8.26', settings: { optimizer: {enabled:true,runs:200}, viaIR: false, evmVersion: 'cancun' } }
-  }
-}
-  settings: {
-    optimizer: { enabled: true, runs: 200 },
-    viaIR: true, // must be true globally
-    evmVersion: 'cancun',
+    compilers: [
+      {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: true,
+          evmVersion: 'cancun',
+        },
+      },
+    ],
+    overrides: {
+      // WikiMarketRegistry has a very large initcode (all market data in constructor-like function).
+      // viaIR=false avoids the "initcode size exceeds 49152 bytes" limit on that one file only.
+      'src/WikiMarketRegistry.sol': {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: false,
+          evmVersion: 'cancun',
+        },
+      },
+    },
   },
-},
+
   paths: {
     sources: SOURCE_DIR,
   },
+
   networks: {
-    // ── Mainnet ──────────────────────────────────────────────────────────────
     arbitrum_one: {
       url:      ALCHEMY_ARBITRUM || 'https://arb-mainnet.g.alchemy.com/v2/YOUR_KEY_HERE',
       accounts: [DEPLOYER_KEY],
       chainId:  42161,
       gasPrice: 'auto',
     },
-    // ── Testnet ──────────────────────────────────────────────────────────────
     arbitrum_sepolia: {
-      url:      ALCHEMY_SEPOLIA  || 'https://arb-sepolia.g.alchemy.com/v2/YOUR_KEY_HERE',
+      url:      ALCHEMY_SEPOLIA || 'https://arb-sepolia.g.alchemy.com/v2/YOUR_KEY_HERE',
       accounts: [DEPLOYER_KEY],
       chainId:  421614,
     },
-    // ── Tenderly Simulation ───────────────────────────────────────────────────
     tenderly: {
-      url:      TENDERLY_RPC     || 'https://arbitrum.gateway.tenderly.co/YOUR_KEY_HERE',
+      url:      TENDERLY_RPC || 'https://arbitrum.gateway.tenderly.co/YOUR_KEY_HERE',
       accounts: [DEPLOYER_KEY],
       chainId:  42161,
     },
   },
-  // ── Arbiscan verification ─────────────────────────────────────────────────
+
   etherscan: {
     apiKey: {
       arbitrumOne:     ETHERSCAN_KEY || 'YOUR_ARBISCAN_KEY_HERE',
       arbitrumSepolia: ETHERSCAN_KEY || 'YOUR_ARBISCAN_KEY_HERE',
     },
-    customChains: [{
-      network: 'arbitrumSepolia',
-      chainId:  421614,
-      urls: {
-        apiURL:     'https://api-sepolia.arbiscan.io/api',
-        browserURL: 'https://sepolia.arbiscan.io',
+    customChains: [
+      {
+        network: 'arbitrumSepolia',
+        chainId: 421614,
+        urls: {
+          apiURL:     'https://api-sepolia.arbiscan.io/api',
+          browserURL: 'https://sepolia.arbiscan.io',
+        },
       },
-    }],
+    ],
   },
+
   sourcify: { enabled: false },
 };
