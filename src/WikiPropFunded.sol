@@ -257,7 +257,11 @@ contract WikiPropFunded is Ownable2Step, ReentrancyGuard, Pausable, IFlashLoanRe
             usingFlashLoan:       false,
             activePositionId:     0,
             allocatedCapital:     0,
-            closeReason:          ""
+            closeReason:          "",
+            retainedBuffer:       0,
+            withdrawalCount:      0,
+            lastWithdrawalTs:     0,
+            totalWithdrawn:       0
         });
 
         traderAccounts[trader].push(accountId);

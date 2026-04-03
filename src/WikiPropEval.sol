@@ -280,17 +280,36 @@ contract WikiPropEval is Ownable2Step, ReentrancyGuard, Pausable {
         evalId = ++totalEvals;
         uint256 ts = block.timestamp;
 
-        evals[evalId] = EvalAccount({
-            trader: msg.sender, tier: tier,
-            phase: EvalPhase.Phase1, status: EvalStatus.Active,
-            accountSize: accountSize, balance: accountSize,
-            startBalance: accountSize, peakBalance: accountSize,
-            dailyStartBalance: accountSize, lastDayTs: ts,
-            p1StartTs: ts, p2StartTs: 0,
-            feePaid: fee, realizedPnl: 0,
-            openTradeCount: 0, totalTrades: 0,
-            breached: false, breachReason: "", createdAt: ts
-        });
+        EvalAccount storage e = evals[evalId];
+        e.trader = msg.sender;
+        e.tier = tier;
+        e.phase = EvalPhase.Phase1;
+        e.status = EvalStatus.Active;
+        e.accountSize = accountSize;
+        e.balance = accountSize;
+        e.startBalance = accountSize;
+        e.originalBalance = accountSize;
+        e.peakBalance = accountSize;
+        e.dailyStartBalance = accountSize;
+        e.lastDayTs = ts;
+        e.p1StartTs = ts;
+        e.p2StartTs = 0;
+        e.feePaid = fee;
+        e.realizedPnl = 0;
+        e.openTradeCount = 0;
+        e.totalTrades = 0;
+        e.p1FinalBalance = 0;
+        e.p1ProfitBps = 0;
+        e.p1TradingDays = 0;
+        e.p1CompletedTs = 0;
+        e.p1Passed = false;
+        e.breached = false;
+        e.breachReason = "";
+        e.createdAt = ts;
+        e.bestSingleDayProfit = 0;
+        e.totalRealizedProfit = 0;
+        e.tradingDaysCount = 0;
+        e.lastTradedDay = 0;
 
         traderEvals[msg.sender].push(evalId);
         activeEvalId[msg.sender] = evalId;
@@ -487,7 +506,10 @@ contract WikiPropEval is Ownable2Step, ReentrancyGuard, Pausable {
     function _updateConsistency(uint256 evalId, int256 tradePnl) internal {
         EvalAccount storage e = evals[evalId];
         TierConfig    storage t = tiers[e.tier];
-        if (t.consistencyPct == 0) return; // rule not configured for this tier
+        uint256 consistencyPct = (e.phase == EvalPhase.Phase1)
+            ? t.p1ConsistencyPct
+            : t.p2ConsistencyPct;
+        if (consistencyPct == 0) return; // rule not configured for this tier
 
         uint256 today = block.timestamp / 1 days;
 
@@ -532,7 +554,10 @@ contract WikiPropEval is Ownable2Step, ReentrancyGuard, Pausable {
         }
 
         // Check minimum trading days
-        if (e.tradingDaysCount < t.minTradingDays) {
+        uint256 minTradingDays = (e.phase == EvalPhase.Phase1)
+            ? t.p1MinTradingDays
+            : t.p2MinTradingDays;
+        if (e.tradingDaysCount < minTradingDays) {
             // Not a breach yet — but checkPass will enforce this at end
         }
 
@@ -549,11 +574,17 @@ contract WikiPropEval is Ownable2Step, ReentrancyGuard, Pausable {
     ) {
         EvalAccount storage e = evals[evalId];
         TierConfig    storage t = tiers[e.tier];
+        uint256 consistencyPct = (e.phase == EvalPhase.Phase1)
+            ? t.p1ConsistencyPct
+            : t.p2ConsistencyPct;
+        uint256 minDays = (e.phase == EvalPhase.Phase1)
+            ? t.p1MinTradingDays
+            : t.p2MinTradingDays;
         bestDayProfit   = e.bestSingleDayProfit;
         totalProfit     = e.totalRealizedProfit;
-        allowedMaxDay   = totalProfit > 0 ? totalProfit * t.consistencyPct / 100 : 0;
+        allowedMaxDay   = totalProfit > 0 ? totalProfit * consistencyPct / 100 : 0;
         tradingDays     = e.tradingDaysCount;
-        minDaysRequired = t.minTradingDays;
+        minDaysRequired = minDays;
         consistent      = bestDayProfit <= allowedMaxDay && tradingDays >= minDaysRequired;
     }
 
@@ -784,7 +815,50 @@ contract WikiPropEval is Ownable2Step, ReentrancyGuard, Pausable {
         }
     }
 
-    function getEval(uint256 id)      external view returns (EvalAccount memory) { return evals[id]; }
+    function getEval(uint256 id) external view returns (
+        address trader,
+        uint8 tier,
+        EvalPhase phase,
+        EvalStatus status,
+        uint256 accountSize,
+        uint256 balance,
+        uint256 startBalance,
+        uint256 originalBalance,
+        uint256 peakBalance,
+        uint256 dailyStartBalance,
+        uint256 lastDayTs,
+        uint256 p1StartTs,
+        uint256 p2StartTs,
+        uint256 feePaid,
+        int256 realizedPnl,
+        uint256 openTradeCount,
+        uint256 totalTrades,
+        bool breached,
+        string memory breachReason,
+        uint256 createdAt
+    ) {
+        EvalAccount storage e = evals[id];
+        trader = e.trader;
+        tier = e.tier;
+        phase = e.phase;
+        status = e.status;
+        accountSize = e.accountSize;
+        balance = e.balance;
+        startBalance = e.startBalance;
+        originalBalance = e.originalBalance;
+        peakBalance = e.peakBalance;
+        dailyStartBalance = e.dailyStartBalance;
+        lastDayTs = e.lastDayTs;
+        p1StartTs = e.p1StartTs;
+        p2StartTs = e.p2StartTs;
+        feePaid = e.feePaid;
+        realizedPnl = e.realizedPnl;
+        openTradeCount = e.openTradeCount;
+        totalTrades = e.totalTrades;
+        breached = e.breached;
+        breachReason = e.breachReason;
+        createdAt = e.createdAt;
+    }
     function getSimTrade(uint256 id)  external view returns (SimTrade memory)    { return simTrades[id]; }
     function getTraderEvals(address t) external view returns (uint256[] memory)  { return traderEvals[t]; }
     function getEvalTrades(uint256 id) external view returns (uint256[] memory)  { return evalTradeIds[id]; }
@@ -806,7 +880,8 @@ contract WikiPropEval is Ownable2Step, ReentrancyGuard, Pausable {
             ? e.p1StartTs + cfg.p1Days * 1 days
             : e.p2StartTs + cfg.p2Days * 1 days;
         daysRemaining = end > block.timestamp ? (end - block.timestamp) / 1 days : 0;
-        onTrack = !e.breached && dailyDDUsed < cfg.dailyDDBps / 2 && profitPct > 0;
+        uint256 phaseDailyDDBps = e.phase == EvalPhase.Phase1 ? cfg.p1DailyDDBps : cfg.p2DailyDDBps;
+        onTrack = !e.breached && dailyDDUsed < phaseDailyDDBps / 2 && profitPct > 0;
     }
 
     // ── Admin ──────────────────────────────────────────────────────────────

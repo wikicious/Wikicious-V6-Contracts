@@ -309,7 +309,7 @@ contract WikiSpotRouter is Ownable2Step, ReentrancyGuard {
                     fee:               cfg.fee,
                     recipient:         address(this),
                     amountIn:          amountIn,
-                    amountOutMinimum:  minEthOut > 0 ? minEthOut * 95 / 100 : 1,  // We handle slippage via minAmountOut
+                    amountOutMinimum:  1,  // user-level slippage is enforced in swap() via minAmountOut
                     sqrtPriceLimitX96: 0
                 })
             );
