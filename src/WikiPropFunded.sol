@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /// @title WikiPropFunded — Funded prop trading accounts
 ///
@@ -318,9 +319,9 @@ contract WikiPropFunded is Ownable2Step, ReentrancyGuard, Pausable, IFlashLoanRe
             leverage <= effectiveCap,
             string(abi.encodePacked(
                 "Funded: max leverage on funded account is ",
-                _uint2str(effectiveCap),
+                Strings.toString(effectiveCap),
                 "x (Tier ",
-                _uint2str(acc.tier),
+                Strings.toString(uint256(acc.tier)),
                 unicode" funded cap). Eval was higher — funded uses real pool capital."
             ))
         );
