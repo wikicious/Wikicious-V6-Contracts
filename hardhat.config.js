@@ -39,6 +39,33 @@ module.exports = {
       viaIR: true,
       evmVersion: 'cancun',
     },
+    overrides: {
+      // Compile registry without IR to avoid HH600 Yul stack issue in this file.
+      'WikiMarketRegistry.sol': {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: false,
+          evmVersion: 'cancun',
+        },
+      },
+      'src/WikiMarketRegistry.sol': {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: false,
+          evmVersion: 'cancun',
+        },
+      },
+      './src/WikiMarketRegistry.sol': {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: false,
+          evmVersion: 'cancun',
+        },
+      },
+    },
   },   
   paths: {
     sources: SOURCE_DIR,
