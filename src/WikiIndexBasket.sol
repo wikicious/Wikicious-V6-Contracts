@@ -144,8 +144,7 @@ contract WikiIndexBasket is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
         // Validate and store components [A1]
         uint256 totalWeight;
         for (uint i; i < _components.length; i++) {
-            (uint256 p, uint256 ts) = _oracle.call(abi.encodeWithSignature("getPrice(bytes32)", _components[i].marketId))
-                == bytes("") ? (1e18, block.timestamp) : _getPriceInternal(_oracle, _components[i].marketId);
+            (uint256 p,) = _getPriceInternal(_oracle, _components[i].marketId);
             Component memory c = _components[i];
             c.initPrice = p > 0 ? p : 1e18;
             components.push(c);

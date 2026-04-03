@@ -39,13 +39,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  *
  * ─── CONFIGURABLE BOUNDS ──────────────────────────────────────────────────────
  *
- *   Each bucket: 5%–60% (enforced in interface IWikiOpsVault  { function receiveAndInvest(uint256 amount) external; }
-
-interface IWikiPOL       { function addFees(uint256 amount) external; }
-
-interface IWikiStaking   { function distributeFees(uint256 amount) external; }
-
-contract — no bucket can be zeroed)
+ *   Each bucket: 5%–60% (enforced in contract — no bucket can be zeroed)
  *   All five buckets must always sum to 100% exactly
  *   Changes require multisig + 48h timelock
  *   Max ops bucket: 35% (cap protects protocol from excessive extraction)
@@ -58,6 +52,9 @@ contract — no bucket can be zeroed)
  * [A5] Ops wallet is mutable (keys can rotate) but change requires multisig.
  * [A6] If any forward fails (e.g. staking paused), USDC held for retry.
  */
+interface IWikiOpsVault  { function receiveAndInvest(uint256 amount) external; }
+interface IWikiPOL       { function addFees(uint256 amount) external; }
+interface IWikiStaking   { function distributeFees(uint256 amount) external; }
 interface IWikiInsurance { function depositYield(uint256 amount) external; }
 
 contract WikiRevenueSplitter is Ownable2Step, ReentrancyGuard {
@@ -311,13 +308,11 @@ contract WikiRevenueSplitter is Ownable2Step, ReentrancyGuard {
         uint256[5] memory monthlyFees,
         uint256[5] memory monthlyToOps
     ) {
-        dailyVolumes = [
-            1_000_000 * 1e6,
-            5_000_000 * 1e6,
-            10_000_000 * 1e6,
-            50_000_000 * 1e6,
-            100_000_000 * 1e6
-        ];
+        dailyVolumes[0] = 1_000_000 * 1e6;
+        dailyVolumes[1] = 5_000_000 * 1e6;
+        dailyVolumes[2] = 10_000_000 * 1e6;
+        dailyVolumes[3] = 50_000_000 * 1e6;
+        dailyVolumes[4] = 100_000_000 * 1e6;
         uint256 feeRateBps = 6; // 0.06% average fee
         for (uint i; i < 5; i++) {
             uint256 dailyFees    = dailyVolumes[i] * feeRateBps / BPS;

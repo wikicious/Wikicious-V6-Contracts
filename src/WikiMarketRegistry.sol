@@ -142,11 +142,11 @@ contract WikiMarketRegistry is Ownable2Step {
 
         // ── FOREX EXOTICS (Pyth + Guardian) ──────────────────────────────
         // USD/TRY — Turkish Lira
-        _add("USD/TRY","USD","TRY",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),0xb7a8eba68a997cd0210c2e1e4ee811ad2d174b3611c22d9ebf16f4cb7e9ba850,0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
+        _add("USD/TRY","USD","TRY",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"b7a8eba68a997cd0210c2e1e4ee811ad2d174b3611c22d9ebf16f4cb7e9ba850"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
         // USD/ZAR — South African Rand
-        _add("USD/ZAR","USD","ZAR",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),0x389d889017db82bf42141f23b61b8de938a4e2d156e7460f2ca5b306ca997df,0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
+        _add("USD/ZAR","USD","ZAR",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"0389d889017db82bf42141f23b61b8de938a4e2d156e7460f2ca5b306ca997df"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
         // USD/MXN — Mexican Peso
-        _add("USD/MXN","USD","MXN",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),0xe13b1c1ffb32f34e1be9545583f01ef385fde7f42ee66049d30570dc866b77ca,0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
+        _add("USD/MXN","USD","MXN",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"e13b1c1ffb32f34e1be9545583f01ef385fde7f42ee66049d30570dc866b77ca"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
         // USD/BRL — Brazilian Real
         _add("USD/BRL","USD","BRL",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),0x6c75e52531ec5fd3ef253f6062956a8508a2f03fa0a209fb7fbc51ebea3cb2d0,0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
         // USD/INR — Indian Rupee
@@ -154,7 +154,7 @@ contract WikiMarketRegistry is Ownable2Step {
         // USD/SGD — Singapore Dollar
         _add("USD/SGD","USD","SGD",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),0x396a969a9c1480fa15ed50bc59149e2c0075a72fe8f458ed941ddec48bdb4918,0,0,2000,50,5,2,5_000_000e6,5_000_000e6,100e6,500_000e6,3,15,5);
         // USD/HKD — Hong Kong Dollar
-        _add("USD/HKD","USD","HKD",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),0x7254abad1770cabc0a58617e79b20e0de38f41cee77bd93e3c0b3e8b3d56e02,0,0,2000,50,5,2,5_000_000e6,5_000_000e6,100e6,500_000e6,3,15,4);
+        _add("USD/HKD","USD","HKD",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"07254abad1770cabc0a58617e79b20e0de38f41cee77bd93e3c0b3e8b3d56e02"),0,0,2000,50,5,2,5_000_000e6,5_000_000e6,100e6,500_000e6,3,15,4);
         // USD/KRW — South Korean Won (Guardian)
         _add("USD/KRW","USD","KRW",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,3_000_000e6,3_000_000e6,100e6,300_000e6,6,30,2);
         // USD/THB — Thai Baht (Guardian)
@@ -186,7 +186,7 @@ contract WikiMarketRegistry is Ownable2Step {
         _add("XAU/USD","XAU","USD",CAT_METALS,SRC_CHAINLINK,CL_XAU_USD,bytes32(0),0,0,10000,10,3,1,50_000_000e6,50_000_000e6,100e6,5_000_000e6,2,10,2);
         _add("XAG/USD","XAG","USD",CAT_METALS,SRC_CHAINLINK,CL_XAG_USD,bytes32(0),0,0,5000, 20,4,2,20_000_000e6,20_000_000e6,100e6,2_000_000e6,3,12,4);
         // Platinum + Palladium via Pyth
-        _add("XPT/USD","XPT","USD",CAT_METALS,SRC_PYTH,address(0),0x9f4e8c5d6b3a1e7f2a8d4c0b9e6f3a2b5c8d1e4f7a0b3c6d9e2f5a8b1c4d7e0f3,0,0,5000,20,5,2,10_000_000e6,10_000_000e6,100e6,1_000_000e6,4,15,2);
+        _add("XPT/USD","XPT","USD",CAT_METALS,SRC_PYTH,address(0),bytes32(0),0,0,5000,20,5,2,10_000_000e6,10_000_000e6,100e6,1_000_000e6,4,15,2);
         _add("XPD/USD","XPD","USD",CAT_METALS,SRC_PYTH,address(0),0xa8b1c4d7e0f3a6b9c2d5e8f1a4b7c0d3e6f9a2b5c8d1e4f7a0b3c6d9e2f5a8b1,0,0,5000,20,5,2,5_000_000e6, 5_000_000e6, 100e6,500_000e6,  5,20,2);
 
         // ── COMMODITIES ───────────────────────────────────────────────────

@@ -143,7 +143,9 @@ contract WikiPortfolioTracker is Ownable2Step {
         if (registry.botVault != address(0)) {
             for (uint i; i < 4; i++) {
                 try IWikiBotVault(registry.botVault).getUserDashboard(trader, i) returns (
-                    uint256 shares, uint256 val, uint256 dep, int256 pnl, uint256 /*fee*/, uint256 /*ts*/, bool /*active*/
+                    uint256 /*shares*/, uint256 val, uint256 /*dep*/, int256 pnl,
+                    uint256 /*fee*/, uint256 /*ts*/, uint256 /*u1*/, bool /*active*/,
+                    string memory /*name*/, string memory /*description*/
                 ) {
                     p.botAllocations[i] = val;
                     p.botPnl[i]         = pnl;
@@ -168,7 +170,8 @@ contract WikiPortfolioTracker is Ownable2Step {
         // Trade history summary
         if (registry.tradeHistory != address(0)) {
             try IWikiTradeHistory(registry.tradeHistory).getTaxSummary(trader) returns (
-                int256 totalPnl, uint256 fees, uint256 /*unused*/, uint256 trades, uint256 /*u2*/, uint256 /*u3*/, uint256 /*u4*/
+                int256 totalPnl, uint256 fees, uint256 /*unused*/, uint256 trades,
+                uint256 /*u2*/, uint256 /*u3*/, int256 /*u4*/, int256 /*u5*/
             ) {
                 p.totalPnlUsd      = totalPnl;
                 p.lifetimeFeesPaid = fees;

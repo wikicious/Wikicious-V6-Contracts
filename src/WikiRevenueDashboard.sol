@@ -161,7 +161,9 @@ contract WikiRevenueDashboard is Ownable2Step {
 
         if (opsVault != address(0)) {
             try IWikiOpsVault(opsVault).dashboard() returns (
-                uint256 totalVal, uint256 /*tvl*/, uint256 /*apr*/, uint256 /*rewards*/, uint256 yieldEarned, uint256 /*pending*/, uint256 /*ts*/
+                uint256 totalVal, uint256 /*tvl*/, uint256 /*apr*/, uint256 /*rewards*/,
+                uint256 yieldEarned, uint256 /*pending*/, uint256 /*ts*/,
+                uint256 /*u1*/, uint256 /*u2*/, uint256 /*u3*/
             ) {
                 opsVaultBalance     = totalVal;
                 opsVaultYieldEarned = yieldEarned;
