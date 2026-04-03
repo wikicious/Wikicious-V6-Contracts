@@ -131,7 +131,7 @@ constructor(address _spot, address _treasury, address _owner) Ownable(_owner) {
                 recipient:         address(this),
                 deadline:          p.deadline > 0 ? p.deadline : block.timestamp + 60,
                 amountIn:          half,
-                amountOutMinimum:  minEthOut > 0 ? minEthOut * 95 / 100 : 1,
+                amountOutMinimum:  1,
                 sqrtPriceLimitX96: 0
             }));
         } else {

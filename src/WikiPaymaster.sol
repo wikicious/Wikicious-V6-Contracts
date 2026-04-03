@@ -113,8 +113,9 @@ contract WikiPaymaster is Ownable2Step, ReentrancyGuard {
 
         // Decode token from paymasterAndData (bytes 20..40 = token address)
         address token;
-        if (userOp.paymasterAndData.length >= 52) {
-            assembly { token := mload(add(userOp.paymasterAndData, 52)) }
+        bytes calldata pmd = userOp.paymasterAndData;
+        if (pmd.length >= 52) {
+            token = address(bytes20(pmd[32:52]));
         }
 
         if (freeGasUsers[userOp.sender]) {
