@@ -1,6 +1,7 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
+
 // Optional per-project proxy override for hardhat compiler downloads.
 // Use these when global proxy env vars are not picked up by your runtime:
 //   HARDHAT_HTTPS_PROXY, HARDHAT_HTTP_PROXY, HARDHAT_NO_PROXY
@@ -38,6 +39,16 @@ module.exports = {
       optimizer: { enabled: true, runs: 200 },
       viaIR: true,
       evmVersion: 'cancun',
+    },
+    overrides: {
+      'src/WikiMarketRegistry.sol': {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: false,
+          evmVersion: 'cancun',
+        },
+      },
     },
   },   
   paths: {
