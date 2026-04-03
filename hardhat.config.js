@@ -34,23 +34,31 @@ if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
 
 module.exports = {
   solidity: {
-    version: '0.8.26',
-    settings: {
-      optimizer: { enabled: true, runs: 200 },
-      viaIR: false,
-      evmVersion: 'cancun',
-    },
-    overrides: {
-      'src/WikiMarketRegistry.sol': {
-        version: '0.8.26',
-        settings: {
-          optimizer: { enabled: true, runs: 200 },
-          viaIR: false,
-          evmVersion: 'cancun',
-        },
+  version: '0.8.26',
+  settings: {
+    optimizer: { enabled: true, runs: 200 },
+    viaIR: true, // must be true globally
+    evmVersion: 'cancun',
+  },
+  overrides: {
+    'WikiMarketRegistry.sol': {
+      version: '0.8.26',
+      settings: {
+        optimizer: { enabled: true, runs: 200 },
+        viaIR: false,
+        evmVersion: 'cancun',
       },
     },
-  },   
+    'src/WikiMarketRegistry.sol': {
+      version: '0.8.26',
+      settings: {
+        optimizer: { enabled: true, runs: 200 },
+        viaIR: false,
+        evmVersion: 'cancun',
+      },
+    },
+  },
+},
   paths: {
     sources: SOURCE_DIR,
   },
