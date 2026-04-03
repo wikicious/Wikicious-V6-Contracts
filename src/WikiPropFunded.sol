@@ -257,7 +257,11 @@ contract WikiPropFunded is Ownable2Step, ReentrancyGuard, Pausable, IFlashLoanRe
             usingFlashLoan:       false,
             activePositionId:     0,
             allocatedCapital:     0,
-            closeReason:          ""
+            closeReason:          "",
+            retainedBuffer:       0,
+            withdrawalCount:      0,
+            lastWithdrawalTs:     0,
+            totalWithdrawn:       0
         });
 
         traderAccounts[trader].push(accountId);
@@ -648,7 +652,7 @@ contract WikiPropFunded is Ownable2Step, ReentrancyGuard, Pausable, IFlashLoanRe
 
         // Force close any open position
         if (acc.activePositionId != 0) {
-            // Keeper will close — emit
+            uint256 alloc = acc.allocatedCapital;
             acc.allocatedCapital = 0;
             IWikiPropPoolForFunded(propPool).returnCapital(acc.trader, alloc, 0, loss > alloc ? alloc : loss);
         }
@@ -700,6 +704,23 @@ contract WikiPropFunded is Ownable2Step, ReentrancyGuard, Pausable, IFlashLoanRe
             acc.dailyStartBalance = acc.currentBalance;
             acc.lastDayTs         = block.timestamp;
         }
+    }
+
+    function _uint2str(uint256 v) internal pure returns (string memory str) {
+        if (v == 0) return "0";
+        uint256 j = v;
+        uint256 len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory b = new bytes(len);
+        while (v != 0) {
+            len--;
+            b[len] = bytes1(uint8(48 + (v % 10)));
+            v /= 10;
+        }
+        str = string(b);
     }
 
     // ── Views ──────────────────────────────────────────────────────────────

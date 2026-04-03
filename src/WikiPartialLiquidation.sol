@@ -185,7 +185,7 @@ contract WikiPartialLiquidation is Ownable2Step, ReentrancyGuard {
         // If health is critically negative or step 3, escalate to full liq
         if (healthBps == 0 || step >= 3) {
             emit FullLiquidationEscalated(positionId, pos.trader, step);
-            (int256 pnl) = perp.forceClose(positionId);
+            perp.forceClose(positionId);
             fullyLiquidated = true;
             newHealthBps = 0;
             _distributeFee(pos.notional, msg.sender);

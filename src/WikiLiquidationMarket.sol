@@ -53,6 +53,7 @@ interface IWikiPerp {
         }
         function getPosition(uint256 posId) external view returns (Position memory);
         function liquidate(uint256 posId) external returns (uint256 collateral);
+        function isLiquidatable(uint256 posId) external view returns (bool);
     }
 
 contract WikiLiquidationMarket is Ownable2Step, ReentrancyGuard, Pausable {
@@ -114,7 +115,7 @@ contract WikiLiquidationMarket is Ownable2Step, ReentrancyGuard, Pausable {
     function openAuction(uint256 posId) external nonReentrant whenNotPaused {
         require(!posHasAuction[posId],           "LiqMkt: auction exists"); // [A5]
         require(perp.isLiquidatable(posId),      "LiqMkt: not liquidatable"); // [A1]
-        IWikiPerp.Position memory pos = perp.positions(posId);
+        IWikiPerp.Position memory pos = perp.getPosition(posId);
         require(pos.active,                      "LiqMkt: position closed");
         require(pos.collateral >= MIN_COLLATERAL,"LiqMkt: too small");
 
@@ -147,7 +148,7 @@ contract WikiLiquidationMarket is Ownable2Step, ReentrancyGuard, Pausable {
         require(!a.settled,                                      "LiqMkt: settled");
         require(block.number <= a.openBlock + MAX_BLOCKS,        "LiqMkt: expired"); // [A2]
 
-        IWikiPerp.Position memory pos = perp.positions(a.posId);
+        IWikiPerp.Position memory pos = perp.getPosition(a.posId);
         require(pos.active && perp.isLiquidatable(a.posId),      "LiqMkt: not liq anymore");
 
         // Dutch auction: discount grows each block [A2]

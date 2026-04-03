@@ -296,19 +296,20 @@ contract WikiTrailingStop is Ownable2Step, ReentrancyGuard {
      * @notice Keeper updates trailing stop prices as market moves.
      */
     function updateTrailingStops(uint256[] calldata orderIds, uint256[] calldata newPrices) external {
-        require(msg.sender == keeper || msg.sender == owner(), "TS: not keeper");
+        require(keepers[msg.sender] || msg.sender == owner(), "TS: not keeper");
+        require(orderIds.length == newPrices.length, "TS: length mismatch");
         for (uint i; i < orderIds.length; i++) {
             uint256 oid  = orderIds[i];
             uint256 peak = trailPeak[oid];
-            bool isLong  = !orders[oid].isBuy; // sell stop for longs
+            bool isLong  = stops[oid].isLong;
             if (isLong && newPrices[i] > peak) {
                 trailPeak[oid]    = newPrices[i];
                 uint256 offset    = trailOffsetBps[oid];
-                orders[oid].price = newPrices[i] * (10000 - offset) / 10000;
+                stops[oid].currentStopPrice = newPrices[i] * (10000 - offset) / 10000;
             } else if (!isLong && newPrices[i] < peak) {
                 trailPeak[oid]    = newPrices[i];
                 uint256 offset    = trailOffsetBps[oid];
-                orders[oid].price = newPrices[i] * (10000 + offset) / 10000;
+                stops[oid].currentStopPrice = newPrices[i] * (10000 + offset) / 10000;
             }
         }
     }
