@@ -707,6 +707,23 @@ contract WikiPropFunded is Ownable2Step, ReentrancyGuard, Pausable, IFlashLoanRe
         }
     }
 
+    function _uint2str(uint256 v) internal pure returns (string memory str) {
+        if (v == 0) return "0";
+        uint256 j = v;
+        uint256 len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory b = new bytes(len);
+        while (v != 0) {
+            len--;
+            b[len] = bytes1(uint8(48 + (v % 10)));
+            v /= 10;
+        }
+        str = string(b);
+    }
+
     // ── Views ──────────────────────────────────────────────────────────────
     function getAccount(uint256 id) external view returns (FundedAccount memory) { return accounts[id]; }
     function getTraderAccounts(address t) external view returns (uint256[] memory) { return traderAccounts[t]; }
