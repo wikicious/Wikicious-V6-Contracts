@@ -3,15 +3,15 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
-/// @title WikiMarketRegistry — Single source of truth for all tradeable markets
+/// @title WikiMarketRegistry â€” Single source of truth for all tradeable markets
 ///
 /// MARKET CATEGORIES:
-///   0 = CRYPTO      — 24/7, up to 125x
-///   1 = FOREX_MAJOR — Mon 00:00 – Fri 21:00 UTC, up to 50x
-///   2 = FOREX_MINOR — same hours, up to 30x
-///   3 = FOREX_EXOTIC— same hours, up to 20x
-///   4 = METALS      — Mon 00:00 – Fri 21:00 UTC (23h break Fri-Sun), up to 100x (gold), 50x (others)
-///   5 = COMMODITIES — exchange hours, up to 20x
+///   0 = CRYPTO      â€” 24/7, up to 125x
+///   1 = FOREX_MAJOR â€” Mon 00:00 â€“ Fri 21:00 UTC, up to 50x
+///   2 = FOREX_MINOR â€” same hours, up to 30x
+///   3 = FOREX_EXOTICâ€” same hours, up to 20x
+///   4 = METALS      â€” Mon 00:00 â€“ Fri 21:00 UTC (23h break Fri-Sun), up to 100x (gold), 50x (others)
+///   5 = COMMODITIES â€” exchange hours, up to 20x
 ///
 /// ORACLE PRIORITY (per market):
 ///   Source 0 = Chainlink (most trusted, ~40 pairs)
@@ -69,9 +69,9 @@ contract WikiMarketRegistry is Ownable2Step {
     event MarketPaused(uint256 indexed id, string symbol);
     event MarketResumed(uint256 indexed id, string symbol);
 
-    // ── Chainlink feed addresses (Arbitrum Mainnet) ────────────────────────
+    // â”€â”€ Chainlink feed addresses (Arbitrum Mainnet) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Crypto
-    address constant CL_BTC_USD  = 0x6ce185539aD4FDAbEb5E459F19E539FA48094C2a; // Arbitrum BTC/USD ✅
+    address constant CL_BTC_USD  = 0x6ce185539aD4FDAbEb5E459F19E539FA48094C2a; // Arbitrum BTC/USD âœ…
     address constant CL_ETH_USD  = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612;
     address constant CL_ARB_USD  = 0xb2A824043730Fe05F3Da2EFAfa1CbBe83Fa548d4;
     address constant CL_SOL_USD  = 0x24ceA4b8ce57cdA5058b924B9B9987992450590c;
@@ -90,7 +90,7 @@ contract WikiMarketRegistry is Ownable2Step {
     address constant CL_NZD_USD  = 0x0F82d66499C33cabe7F8Ad4f9Dad0c95cA36bAE0;
     // Metals
     address constant CL_XAU_USD  = 0x1F954Dc24a49708C26E0C1777f16750B5C6d5a2c;
-    address constant CL_XAG_USD  = 0xC56765f04B248394CF1619D20dB8082Edbfa75b1; // Arbitrum XAG/USD ✅
+    address constant CL_XAG_USD  = 0xC56765f04B248394CF1619D20dB8082Edbfa75b1; // Arbitrum XAG/USD âœ…
 
     constructor(address owner) Ownable(owner) {
         require(owner != address(0), "Wiki: zero owner");
@@ -98,105 +98,7 @@ contract WikiMarketRegistry is Ownable2Step {
         // to avoid constructor initcode-size deployment limits.
     }
 
-    // ── Register all markets on deploy ─────────────────────────────────────
-    function _registerAllMarkets() internal {
-        // ── CRYPTO ────────────────────────────────────────────────────────
-        _add("BTC/USD",  "BTC", "USD", CAT_CRYPTO, SRC_CHAINLINK, 0x6ce185539aD4FDAbEb5E459F19E539FA48094C2a, bytes32(0), 0, 0, 12500, 50,  5, 2, 50_000_000e6, 50_000_000e6, 10e6,  10_000_000e6, 2, 10, 2);
-        _add("ETH/USD",  "ETH", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_ETH_USD,  bytes32(0), 0, 0, 12500, 50,  5, 2, 30_000_000e6, 30_000_000e6, 10e6,  5_000_000e6,  2, 10, 2);
-        _add("SOL/USD",  "SOL", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_SOL_USD,  bytes32(0), 0, 0, 12500, 100, 5, 2, 10_000_000e6, 10_000_000e6, 10e6,  1_000_000e6,  2, 10, 2);
-        _add("ARB/USD",  "ARB", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_ARB_USD,  bytes32(0), 0, 0, 12500, 100, 6, 3, 5_000_000e6,  5_000_000e6,  10e6,  500_000e6,   2, 10, 4);
-        _add("BNB/USD",  "BNB", "USD", CAT_CRYPTO, SRC_CHAINLINK, CL_BNB_USD,  bytes32(0), 0, 0, 12500, 100, 5, 2, 10_000_000e6, 10_000_000e6, 10e6,  1_000_000e6,  2, 10, 2);
-        _add("AVAX/USD", "AVAX","USD", CAT_CRYPTO, SRC_CHAINLINK, CL_AVAX_USD, bytes32(0), 0, 0, 12500, 100, 6, 3, 5_000_000e6,  5_000_000e6,  10e6,  500_000e6,   2, 10, 2);
-        _add("LINK/USD", "LINK","USD", CAT_CRYPTO, SRC_CHAINLINK, CL_LINK_USD, bytes32(0), 0, 0, 12500, 100, 6, 3, 5_000_000e6,  5_000_000e6,  10e6,  500_000e6,   2, 10, 4);
-        _add("MATIC/USD","MATIC","USD",CAT_CRYPTO, SRC_CHAINLINK, CL_MATIC_USD,bytes32(0), 0, 0, 12500, 100, 6, 3, 3_000_000e6,  3_000_000e6,  10e6,  300_000e6,   2, 10, 4);
-        _add("DOGE/USD", "DOGE","USD", CAT_CRYPTO, SRC_PYTH,      address(0),  0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace, 0, 0, 7500, 150, 8, 4, 3_000_000e6, 3_000_000e6, 10e6, 300_000e6, 3, 15, 5);
-        _add("PEPE/USD", "PEPE","USD", CAT_CRYPTO, SRC_PYTH,      address(0),  0xd69731a2e74ac1ce884fc3890f7ee324b6deb66147055249568869ed700882e4, 0, 0, 5000, 200, 10,5, 1_000_000e6, 1_000_000e6, 10e6, 100_000e6,  4, 20, 8);
-        _add("WIF/USD",  "WIF", "USD", CAT_CRYPTO, SRC_PYTH,      address(0),  0x4ca4beeca86f0d164160323817a4e42b10010a724c2217c6ee41b54cd4cc61fc, 0, 0, 5000, 200, 10,5, 500_000e6,  500_000e6,  10e6, 50_000e6,   4, 20, 4);
-        _add("WIK/USD",  "WIK", "USD", CAT_CRYPTO, SRC_GUARDIAN,  address(0),  bytes32(0), 0, 0, 5000, 200, 8, 4, 500_000e6,  500_000e6,  10e6, 50_000e6,   3, 15, 4);
-
-        // ── FOREX MAJORS ──────────────────────────────────────────────────
-        _add("EUR/USD","EUR","USD",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_EUR_USD, bytes32(0),0,0,5000,20,2,1,100_000_000e6,100_000_000e6,100e6,10_000_000e6,1,5,5);
-        _add("GBP/USD","GBP","USD",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_GBP_USD, bytes32(0),0,0,5000,20,2,1,100_000_000e6,100_000_000e6,100e6,10_000_000e6,1,5,5);
-        _add("USD/JPY","USD","JPY",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_JPY_USD, bytes32(0),0,0,5000,20,2,1,100_000_000e6,100_000_000e6,100e6,10_000_000e6,1,5,3);
-        _add("USD/CHF","USD","CHF",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_CHF_USD, bytes32(0),0,0,5000,20,2,1,50_000_000e6, 50_000_000e6, 100e6,5_000_000e6, 1,5,5);
-        _add("USD/CAD","USD","CAD",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_CAD_USD, bytes32(0),0,0,5000,20,2,1,50_000_000e6, 50_000_000e6, 100e6,5_000_000e6, 1,5,5);
-        _add("AUD/USD","AUD","USD",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_AUD_USD, bytes32(0),0,0,5000,20,2,1,50_000_000e6, 50_000_000e6, 100e6,5_000_000e6, 1,5,5);
-        _add("NZD/USD","NZD","USD",CAT_FOREX_MAJOR,SRC_CHAINLINK,CL_NZD_USD, bytes32(0),0,0,5000,20,2,1,30_000_000e6, 30_000_000e6, 100e6,3_000_000e6, 1,5,5);
-
-        // ── FOREX MINORS (derived cross pairs) ────────────────────────────
-        // EUR/GBP = EUR/USD ÷ GBP/USD  (market IDs 14 ÷ 15, 1-indexed)
-        _add("EUR/GBP","EUR","GBP",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),14,15,3000,30,3,1,30_000_000e6,30_000_000e6,100e6,3_000_000e6,2,8,5);
-        _add("EUR/JPY","EUR","JPY",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),14,16,3000,30,3,1,30_000_000e6,30_000_000e6,100e6,3_000_000e6,2,8,3);
-        _add("GBP/JPY","GBP","JPY",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),15,16,3000,30,3,1,20_000_000e6,20_000_000e6,100e6,2_000_000e6,2,8,3);
-        _add("EUR/CHF","EUR","CHF",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),14,17,3000,30,3,1,20_000_000e6,20_000_000e6,100e6,2_000_000e6,2,8,5);
-        _add("EUR/CAD","EUR","CAD",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),14,18,3000,30,3,1,20_000_000e6,20_000_000e6,100e6,2_000_000e6,2,8,5);
-        _add("GBP/CHF","GBP","CHF",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),15,17,3000,30,3,1,20_000_000e6,20_000_000e6,100e6,2_000_000e6,2,8,5);
-        _add("GBP/CAD","GBP","CAD",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),15,18,3000,30,3,1,20_000_000e6,20_000_000e6,100e6,2_000_000e6,2,8,5);
-        _add("AUD/JPY","AUD","JPY",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),19,16,3000,30,3,1,20_000_000e6,20_000_000e6,100e6,2_000_000e6,2,8,3);
-        _add("AUD/CAD","AUD","CAD",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),19,18,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,5);
-        _add("AUD/NZD","AUD","NZD",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),19,20,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,5);
-        _add("CAD/JPY","CAD","JPY",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),18,16,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,3);
-        _add("CHF/JPY","CHF","JPY",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),17,16,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,3);
-        _add("NZD/JPY","NZD","JPY",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),20,16,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,3);
-        _add("NZD/CAD","NZD","CAD",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),20,18,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,5);
-        _add("NZD/CHF","NZD","CHF",CAT_FOREX_MINOR,SRC_DERIVED,address(0),bytes32(0),20,17,3000,30,3,1,10_000_000e6,10_000_000e6,100e6,1_000_000e6,2,8,5);
-
-        // ── FOREX EXOTICS (Pyth + Guardian) ──────────────────────────────
-        // USD/TRY — Turkish Lira
-        _add("USD/TRY","USD","TRY",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"b7a8eba68a997cd0210c2e1e4ee811ad2d174b3611c22d9ebf16f4cb7e9ba850"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
-        // USD/ZAR — South African Rand
-        _add("USD/ZAR","USD","ZAR",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"0389d889017db82bf42141f23b61b8de938a4e2d156e7460f2ca5b306ca997df"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
-        // USD/MXN — Mexican Peso
-        _add("USD/MXN","USD","MXN",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"e13b1c1ffb32f34e1be9545583f01ef385fde7f42ee66049d30570dc866b77ca"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
-        // USD/BRL — Brazilian Real
-        _add("USD/BRL","USD","BRL",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"6c75e52531ec5fd3ef253f6062956a8508a2f03fa0a209fb7fbc51ebea3cb2d0"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
-        // USD/INR — Indian Rupee
-        _add("USD/INR","USD","INR",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"9dd2f5e5ca7bdc09b82696c31e866b807a1b44c45e3ee0d9db22b6da8dbca31c"),0,0,2000,50,8,4,5_000_000e6,5_000_000e6,100e6,500_000e6,5,25,3);
-        // USD/SGD — Singapore Dollar
-        _add("USD/SGD","USD","SGD",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"396a969a9c1480fa15ed50bc59149e2c0075a72fe8f458ed941ddec48bdb4918"),0,0,2000,50,5,2,5_000_000e6,5_000_000e6,100e6,500_000e6,3,15,5);
-        // USD/HKD — Hong Kong Dollar
-        _add("USD/HKD","USD","HKD",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"07254abad1770cabc0a58617e79b20e0de38f41cee77bd93e3c0b3e8b3d56e02"),0,0,2000,50,5,2,5_000_000e6,5_000_000e6,100e6,500_000e6,3,15,4);
-        // USD/KRW — South Korean Won (Guardian)
-        _add("USD/KRW","USD","KRW",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,3_000_000e6,3_000_000e6,100e6,300_000e6,6,30,2);
-        // USD/THB — Thai Baht (Guardian)
-        _add("USD/THB","USD","THB",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,3_000_000e6,3_000_000e6,100e6,300_000e6,6,30,3);
-        // USD/NGN — Nigerian Naira (Guardian)
-        _add("USD/NGN","USD","NGN",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,1000,100,10,5,1_000_000e6,1_000_000e6,100e6,100_000e6,10,50,2);
-        // USD/EGP — Egyptian Pound (Guardian)
-        _add("USD/EGP","USD","EGP",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,1000,100,10,5,1_000_000e6,1_000_000e6,100e6,100_000e6,10,50,3);
-        // USD/PKR — Pakistani Rupee (Guardian)
-        _add("USD/PKR","USD","PKR",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,1000,100,10,5,1_000_000e6,1_000_000e6,100e6,100_000e6,10,50,2);
-        // USD/IDR — Indonesian Rupiah (Pyth)
-        _add("USD/IDR","USD","IDR",CAT_FOREX_EXOTIC,SRC_PYTH,address(0),bytes32(hex"1100000000000000000000000000000000000000000000000000000000000001"),0,0,2000,50,8,4,3_000_000e6,3_000_000e6,100e6,300_000e6,6,30,2);
-        // USD/MYR — Malaysian Ringgit (Guardian)
-        _add("USD/MYR","USD","MYR",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,3_000_000e6,3_000_000e6,100e6,300_000e6,6,30,4);
-        // USD/PHP — Philippine Peso (Guardian)
-        _add("USD/PHP","USD","PHP",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,3_000_000e6,3_000_000e6,100e6,300_000e6,6,30,3);
-        // USD/AED — UAE Dirham (Guardian — USD-pegged, low vol)
-        _add("USD/AED","USD","AED",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,1000,100,5,2,2_000_000e6,2_000_000e6,100e6,200_000e6,3,15,4);
-        // USD/SAR — Saudi Riyal (Guardian)
-        _add("USD/SAR","USD","SAR",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,1000,100,5,2,2_000_000e6,2_000_000e6,100e6,200_000e6,3,15,4);
-        // USD/CZK, PLN, HUF — Eastern Europe (Guardian)
-        _add("USD/CZK","USD","CZK",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,2_000_000e6,2_000_000e6,100e6,200_000e6,6,30,3);
-        _add("USD/PLN","USD","PLN",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,2_000_000e6,2_000_000e6,100e6,200_000e6,6,30,4);
-        _add("USD/HUF","USD","HUF",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,2000,50,8,4,2_000_000e6,2_000_000e6,100e6,200_000e6,6,30,2);
-        // USD/RUB — Russian Ruble (Guardian — high risk)
-        _add("USD/RUB","USD","RUB",CAT_FOREX_EXOTIC,SRC_GUARDIAN,address(0),bytes32(0),0,0,500,200,15,8,500_000e6,500_000e6,100e6,50_000e6,15,60,2);
-
-        // ── METALS ────────────────────────────────────────────────────────
-        _add("XAU/USD","XAU","USD",CAT_METALS,SRC_CHAINLINK,CL_XAU_USD,bytes32(0),0,0,10000,10,3,1,50_000_000e6,50_000_000e6,100e6,5_000_000e6,2,10,2);
-        _add("XAG/USD","XAG","USD",CAT_METALS,SRC_CHAINLINK,CL_XAG_USD,bytes32(0),0,0,5000, 20,4,2,20_000_000e6,20_000_000e6,100e6,2_000_000e6,3,12,4);
-        // Platinum + Palladium via Pyth
-        _add("XPT/USD","XPT","USD",CAT_METALS,SRC_PYTH,address(0),bytes32(0),0,0,5000,20,5,2,10_000_000e6,10_000_000e6,100e6,1_000_000e6,4,15,2);
-        _add("XPD/USD","XPD","USD",CAT_METALS,SRC_PYTH,address(0),bytes32(hex"a8b1c4d7e0f3a6b9c2d5e8f1a4b7c0d3e6f9a2b5c8d1e4f7a0b3c6d9e2f5a8b1"),0,0,5000,20,5,2,5_000_000e6, 5_000_000e6, 100e6,500_000e6,  5,20,2);
-
-        // ── COMMODITIES ───────────────────────────────────────────────────
-        _add("WTI/USD","WTI","USD",CAT_COMMODITIES,SRC_PYTH,address(0),bytes32(hex"f0d57deca57b3da2fe63a493f4c25925fdfd8edf834b20f93e1f84dbd1504d4a"),0,0,2000,50,5,2,20_000_000e6,20_000_000e6,100e6,2_000_000e6,3,15,2);
-        _add("BRENT/USD","BRENT","USD",CAT_COMMODITIES,SRC_PYTH,address(0),bytes32(hex"c96458d393fe9deb7a7d63a0ac41e2898a67a7750dbd166673279e06c868df8a"),0,0,2000,50,5,2,20_000_000e6,20_000_000e6,100e6,2_000_000e6,3,15,2);
-        _add("NG/USD","NG","USD",CAT_COMMODITIES,SRC_PYTH,address(0),bytes32(hex"2b89b9dc8fdf9f34709a5b106b472f0f39bb6ca9ce04b0fd7f2e971688e2e53b"),0,0,1000,100,8,4,10_000_000e6,10_000_000e6,100e6,1_000_000e6,5,25,4);
-    }
-
-    // ── Internal market registration ───────────────────────────────────────
+// â”€â”€ Internal market registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function _add(
         string memory symbol, string memory base, string memory quote,
         uint8 category, uint8 oracleSrc, address feed, bytes32 pythId,
@@ -240,7 +142,7 @@ contract WikiMarketRegistry is Ownable2Step {
         emit MarketAdded(id, symbol, category);
     }
 
-    // ── Views ──────────────────────────────────────────────────────────────
+    // â”€â”€ Views â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function getMarket(uint256 id) external view returns (Market memory) { return markets[id]; }
     function getMarketBySymbol(string calldata s) external view returns (Market memory) { return markets[symbolToId[s]]; }
     function getAllMarkets() external view returns (uint256[] memory) { return activeMarketIds; }
@@ -284,7 +186,7 @@ contract WikiMarketRegistry is Ownable2Step {
 
     uint256 public constant MAX_BATCH_ADD = 50;
 
-    // ── Admin ──────────────────────────────────────────────────────────────
+    // â”€â”€ Admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function addMarket(
         string calldata symbol, string calldata base, string calldata quote,
         uint8 category, uint8 oracleSrc, address feed, bytes32 pythId,
