@@ -1,7 +1,6 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
-// Optional per-project proxy override for hardhat compiler downloads.
 if (process.env.HARDHAT_HTTPS_PROXY && !process.env.HTTPS_PROXY) {
   process.env.HTTPS_PROXY = process.env.HARDHAT_HTTPS_PROXY;
 }
@@ -35,18 +34,6 @@ module.exports = {
         },
       },
     ],
-    overrides: {
-      // WikiMarketRegistry has a very large initcode (all market data in constructor-like function).
-      // viaIR=false avoids the "initcode size exceeds 49152 bytes" limit on that one file only.
-      'src/WikiMarketRegistry.sol': {
-        version: '0.8.26',
-        settings: {
-          optimizer: { enabled: true, runs: 200 },
-          viaIR: false,
-          evmVersion: 'cancun',
-        },
-      },
-    },
   },
 
   paths: {
