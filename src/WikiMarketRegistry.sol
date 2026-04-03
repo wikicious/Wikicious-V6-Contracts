@@ -209,18 +209,32 @@ contract WikiMarketRegistry is Ownable2Step {
         uint256 pricePrecision
     ) internal {
         uint256 id = ++totalMarkets;
-        markets[id] = Market({
-            id: id, symbol: symbol, baseAsset: base, quoteAsset: quote,
-            category: category, oracleSource: oracleSrc,
-            oracleFeed: feed, pythPriceId: pythId,
-            baseMarketId: baseMarket, quoteMarketId: quoteMarket,
-            maxLeverageBps: maxLev, maintenanceMarginBps: maintMargin,
-            takerFeeBps: takerFee, makerFeeBps: makerFee,
-            maxOILong: maxOIL, maxOIShort: maxOIS,
-            minPositionSize: minPos, maxPositionSize: maxPos,
-            spreadBps: spread, offHoursSpreadBps: offHoursSpread,
-            active: true, reduceOnly: false, pricePrecision: pricePrecision
-        });
+        Market storage m = markets[id];
+
+        m.id = id;
+        m.symbol = symbol;
+        m.baseAsset = base;
+        m.quoteAsset = quote;
+        m.category = category;
+        m.oracleSource = oracleSrc;
+        m.oracleFeed = feed;
+        m.pythPriceId = pythId;
+        m.baseMarketId = baseMarket;
+        m.quoteMarketId = quoteMarket;
+        m.maxLeverageBps = maxLev;
+        m.maintenanceMarginBps = maintMargin;
+        m.takerFeeBps = takerFee;
+        m.makerFeeBps = makerFee;
+        m.maxOILong = maxOIL;
+        m.maxOIShort = maxOIS;
+        m.minPositionSize = minPos;
+        m.maxPositionSize = maxPos;
+        m.spreadBps = spread;
+        m.offHoursSpreadBps = offHoursSpread;
+        m.active = true;
+        m.reduceOnly = false;
+        m.pricePrecision = pricePrecision;
+
         symbolToId[symbol] = id;
         activeMarketIds.push(id);
         emit MarketAdded(id, symbol, category);
