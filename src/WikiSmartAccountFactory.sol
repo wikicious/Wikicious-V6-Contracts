@@ -7,6 +7,7 @@ import "./WikiSmartAccount.sol";
  * Deploys deterministic account addresses before first use (counterfactual deployment).
  */
 contract WikiSmartAccountFactory {
+    event AccountCreated(address indexed account, address indexed owner, uint256 salt);
     
     function createAccount(address owner, address[] calldata guardians, uint256 threshold, uint256 salt) external returns (WikiSmartAccount account) {
         bytes32 s = keccak256(abi.encodePacked(owner, salt));

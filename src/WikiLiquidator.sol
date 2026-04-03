@@ -130,7 +130,7 @@ contract WikiLiquidator is Ownable2Step, ReentrancyGuard {
         require(_perp != address(0), "Wiki: zero _perp");
         require(_vault != address(0), "Wiki: zero _vault");
         require(_registry != address(0), "Wiki: zero _registry");
-        perp     = WikiPerp(_perp);
+        perp     = WikiPerp(payable(_perp));
         vault    = WikiVault(_vault);
         registry = WikiKeeperRegistry(_registry);
         USDC     = IERC20(_usdc);
@@ -270,7 +270,7 @@ contract WikiLiquidator is Ownable2Step, ReentrancyGuard {
         if (!pos.open) return (false, 0, pos.liquidationPrice);
 
         WikiPerp.Market memory mkt = perp.getMarket(pos.marketIndex);
-        try perp.oracle().getPriceReadOnly(mkt.marketId) returns (uint256 price, uint256) {
+        try perp.oracle().getPrice(mkt.marketId) returns (uint256 price, uint256) {
             currentPrice = price;
             liqPrice     = pos.liquidationPrice;
             liquidatable = pos.isLong
@@ -285,7 +285,7 @@ contract WikiLiquidator is Ownable2Step, ReentrancyGuard {
         if (!pos.open) return (0, 0, 0);
 
         WikiPerp.Market memory mkt = perp.getMarket(pos.marketIndex);
-        try perp.oracle().getPriceReadOnly(mkt.marketId) returns (uint256 price, uint256) {
+        try perp.oracle().getPrice(mkt.marketId) returns (uint256 price, uint256) {
             urgencyMult = _urgencyMultiplier(pos, price);
             keeperMult  = registry.rewardMultiplier(msg.sender);
             bonus       = _calcBonus(urgencyMult, keeperMult);

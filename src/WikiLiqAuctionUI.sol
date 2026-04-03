@@ -141,13 +141,14 @@ contract WikiLiqAuctionUI is Ownable2Step {
         v.auctionId = auctionId;
         try IWikiLiqMarket(liqMarket).getAuction(auctionId) returns (
             address trader, uint256, uint256 collateral, uint256 debt,
-            uint256, uint256 currentPrice, uint256, uint256 endTime, bool settled
+            uint256 minBid, uint256 endTime, bool settled, address, uint256
         ) {
             if (settled) return v;
             v.trader           = trader;
             v.collateralUsdc   = collateral;
             v.debtUsdc         = debt;
             v.timeRemainingSeconds = endTime > block.timestamp ? endTime - block.timestamp : 0;
+            uint256 currentPrice = minBid;
             if (debt > 0 && currentPrice < debt) {
                 v.currentDiscount  = (debt - currentPrice) * 10000 / debt;
                 v.estimatedProfit  = debt - currentPrice;

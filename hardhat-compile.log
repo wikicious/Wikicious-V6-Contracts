@@ -1,0 +1,19 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+Downloading compiler 0.8.26
+Error HH502: Couldn't download compiler version list. Please check your internet connection and try again.
+
+HardhatError: HH502: Couldn't download compiler version list. Please check your internet connection and try again.
+    at /workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/solidity/compiler/downloader.ts:178:17
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MultiProcessMutex._executeFunctionAndReleaseMutex (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/util/multi-process-mutex.ts:77:19)
+    at CompilerDownloader.downloadCompiler (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/solidity/compiler/downloader.ts:163:5)
+    at SimpleTaskDefinition.action (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/builtin-tasks/compile.ts:588:7)
+    at Environment._runTaskDefinition (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/core/runtime-environment.ts:351:14)
+    at Environment.run (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/core/runtime-environment.ts:184:14)
+    at SimpleTaskDefinition.action (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/builtin-tasks/compile.ts:740:36)
+    at Environment._runTaskDefinition (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/core/runtime-environment.ts:351:14)
+    at Environment.run (/workspace/Wikicious-V6-Contracts/node_modules/hardhat/src/internal/core/runtime-environment.ts:184:14)
+
+    Caused by: AbortError: Proxy response (403) !== 200 when HTTP Tunneling
+        at Client.connect (/workspace/Wikicious-V6-Contracts/node_modules/undici/lib/proxy-agent.js:105:22)
+        at processTicksAndRejections (node:internal/process/task_queues:105:5)

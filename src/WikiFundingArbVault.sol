@@ -157,11 +157,11 @@ contract WikiFundingArbVault is ERC20, Ownable2Step, ReentrancyGuard, Pausable {
             uint256 net = gain - loss;
             uint256 supply = totalSupply();
             if (supply > 0) {
-                uint256 newPrice = (totalAUM + net) * PRECISION / supply;
-                if (newPrice > highWaterMark) {
-                    uint256 excess = (newPrice - highWaterMark) * supply / PRECISION;
+                uint256 updatedPrice = (totalAUM + net) * PRECISION / supply;
+                if (updatedPrice > highWaterMark) {
+                    uint256 excess = (updatedPrice - highWaterMark) * supply / PRECISION;
                     perfFee = excess * performanceFeeBps / BPS;
-                    highWaterMark = newPrice;
+                    highWaterMark = updatedPrice;
                 }
             }
             totalAUM = totalAUM + net;
