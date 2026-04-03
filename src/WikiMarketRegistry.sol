@@ -287,7 +287,39 @@ contract WikiMarketRegistry is Ownable2Step {
         require(batch.length <= MAX_BATCH_ADD, "Wiki: batch too large");
 
         for (uint256 i = 0; i < batch.length; i++) {
-<<
+function addMarkets(MarketInput[] calldata batch) external onlyOwner {
+    require(batch.length > 0, "Wiki: empty batch");
+    require(batch.length <= MAX_BATCH_ADD, "Wiki: batch too large");
+
+    for (uint256 i = 0; i < batch.length; i++) {
+        _addFromInput(batch[i]);
+    }
+}
+
+function _addFromInput(MarketInput calldata m) internal {
+    _add(
+        m.symbol,
+        m.base,
+        m.quote,
+        m.category,
+        m.oracleSrc,
+        m.feed,
+        m.pythId,
+        m.baseM,
+        m.quoteM,
+        m.maxLev,
+        m.maint,
+        m.taker,
+        m.maker,
+        m.oiL,
+        m.oiS,
+        m.minP,
+        m.maxP,
+        m.spread,
+        m.offH,
+        m.prec
+    );
+}
     function pauseMarket(uint256 id) external onlyOwner {
         markets[id].reduceOnly = true;
         emit MarketPaused(id, markets[id].symbol);
