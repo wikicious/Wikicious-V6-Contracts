@@ -1,6 +1,24 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
+const { subtask } = require('hardhat/config');
+const { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } = require('hardhat/builtin-tasks/task-names');
+
+subtask(TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD, async (args, hre, runSuper) => {
+  if (args.solcVersion === '0.8.26') {
+    const compilerPath = require.resolve('solc/soljson.js');
+    return {
+      compilerPath,
+      isSolcJs: true,
+      version: args.solcVersion,
+      longVersion: args.solcVersion,
+    };
+  }
+
+  return runSuper();
+});
+
+
 // Optional per-project proxy override for hardhat compiler downloads.
 // Use these when global proxy env vars are not picked up by your runtime:
 //   HARDHAT_HTTPS_PROXY, HARDHAT_HTTP_PROXY, HARDHAT_NO_PROXY
@@ -25,7 +43,7 @@ const ALCHEMY_ARBITRUM  = process.env.ALCHEMY_ARBITRUM_URL;
 const ALCHEMY_SEPOLIA   = process.env.ALCHEMY_SEPOLIA_URL;
 const TENDERLY_RPC      = process.env.TENDERLY_RPC_URL;
 const ETHERSCAN_KEY     = process.env.ETHERSCAN_API_KEY;
-const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src';
+const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src_compilable';
 
 if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
   throw new Error('ALCHEMY_ARBITRUM_URL is required in .env for mainnet deployment');
