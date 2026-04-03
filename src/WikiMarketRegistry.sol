@@ -260,7 +260,7 @@ contract WikiMarketRegistry is Ownable2Step {
     function isActive(uint256 id) external view returns (bool) { return markets[id].active; }
 
 
-    struct MarketInput {
+        struct MarketInput {
         string symbol;
         string base;
         string quote;
@@ -329,7 +329,6 @@ contract WikiMarketRegistry is Ownable2Step {
             m.prec
         );
     }
-
     function pauseMarket(uint256 id) external onlyOwner {
         markets[id].reduceOnly = true;
         emit MarketPaused(id, markets[id].symbol);
