@@ -258,8 +258,7 @@ contract WikiMarketRegistry is Ownable2Step {
 
     function maxLeverage(uint256 id) external view returns (uint256) { return markets[id].maxLeverageBps / 100; }
     function isActive(uint256 id) external view returns (bool) { return markets[id].active; }
-
-
+    
         struct MarketInput {
         string symbol;
         string base;

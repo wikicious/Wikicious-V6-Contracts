@@ -40,6 +40,16 @@ module.exports = {
       viaIR: true,
       evmVersion: 'cancun',
     },
+    overrides: {
+      'src/WikiMarketRegistry.sol': {
+        version: '0.8.26',
+        settings: {
+          optimizer: { enabled: true, runs: 200 },
+          viaIR: false,
+          evmVersion: 'cancun',
+        },
+      },
+    },
   },   
   paths: {
     sources: SOURCE_DIR,
