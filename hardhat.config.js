@@ -1,6 +1,7 @@
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
+
 // Optional per-project proxy override for hardhat compiler downloads.
 // Use these when global proxy env vars are not picked up by your runtime:
 //   HARDHAT_HTTPS_PROXY, HARDHAT_HTTP_PROXY, HARDHAT_NO_PROXY
@@ -25,7 +26,7 @@ const ALCHEMY_ARBITRUM  = process.env.ALCHEMY_ARBITRUM_URL;
 const ALCHEMY_SEPOLIA   = process.env.ALCHEMY_SEPOLIA_URL;
 const TENDERLY_RPC      = process.env.TENDERLY_RPC_URL;
 const ETHERSCAN_KEY     = process.env.ETHERSCAN_API_KEY;
-const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src';
+const SOURCE_DIR        = process.env.CONTRACT_SOURCES_DIR || './src_compilable';
 
 if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
   throw new Error('ALCHEMY_ARBITRUM_URL is required in .env for mainnet deployment');
@@ -33,40 +34,31 @@ if (!ALCHEMY_ARBITRUM && process.env.HARDHAT_NETWORK === 'arbitrum_one') {
 
 module.exports = {
   solidity: {
-    version: '0.8.26',
-    settings: {
-      optimizer: { enabled: true, runs: 200 },
-      viaIR: true,
-      evmVersion: 'cancun',
-    },
-    overrides: {
-      // Compile registry without IR to avoid HH600 Yul stack issue in this file.
-      'WikiMarketRegistry.sol': {
-        version: '0.8.26',
-        settings: {
-          optimizer: { enabled: true, runs: 200 },
-          viaIR: false,
-          evmVersion: 'cancun',
-        },
-      },
-      'src/WikiMarketRegistry.sol': {
-        version: '0.8.26',
-        settings: {
-          optimizer: { enabled: true, runs: 200 },
-          viaIR: false,
-          evmVersion: 'cancun',
-        },
-      },
-      './src/WikiMarketRegistry.sol': {
-        version: '0.8.26',
-        settings: {
-          optimizer: { enabled: true, runs: 200 },
-          viaIR: false,
-          evmVersion: 'cancun',
-        },
+  version: '0.8.26',
+  settings: {
+    optimizer: { enabled: true, runs: 200 },
+    viaIR: true, // must be true globally
+    evmVersion: 'cancun',
+  },
+  overrides: {
+    'WikiMarketRegistry.sol': {
+      version: '0.8.26',
+      settings: {
+        optimizer: { enabled: true, runs: 200 },
+        viaIR: false,
+        evmVersion: 'cancun',
       },
     },
-  },   
+    'src/WikiMarketRegistry.sol': {
+      version: '0.8.26',
+      settings: {
+        optimizer: { enabled: true, runs: 200 },
+        viaIR: false,
+        evmVersion: 'cancun',
+      },
+    },
+  },
+},
   paths: {
     sources: SOURCE_DIR,
   },
